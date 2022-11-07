@@ -6,7 +6,24 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
+options(warn=-1)
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warn = FALSE)
+options(knitr.duplicate.label = "allow")
+source("links.R")
 ```
 
+
 ## Welcome to David's Project Homepage
+
+
+- [Datacamp](`datacamp_url`)
+- [Github](`github_url`)
+- [rstudio](`rstudio_url`)
+- [rbase](`r_url`)
+  
+<a id="Labs"></a>
+
+- [Lab 8](Labs/Lab-08.htlm)
+- [Lab 9](Labs/Lab-09.htlm)
+- [Lab 10](Labs/Lab-10.htlm)
