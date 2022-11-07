@@ -1,0 +1,87 @@
+---
+title: "In-Class Models 1"
+author: "David Murillo"
+date: "November 1, 2022"
+output:
+  html_document:
+    theme: cosmo
+  html_notebook: default
+---
+
+```{r}
+require(palmerpenguins)
+dat_ade = droplevels(subset(penguins, species == "Adelie"))
+
+hist(dat_ade$body_mass_g, main = "Adelie Penguins: Body Mass", xlab = "body mass (g)")
+
+boxplot(body_mass_g ~ sex, data= penguins)
+```
+
+## Questions
+
+# **Q1 (2 pts.): Create separate boxplots of body mass for male and female Adelie penguins. Your boxplots do not have to be in the same panel like mine. Show the R-code you used to make the plots.**
+
+```{r}
+Adelie <- droplevels(subset(penguins, species == "Adelie"))
+
+Adelie_female <- droplevels(subset(penguins, sex == "female"))
+
+Adelie_male <- droplevels(subset(penguins, sex == "male"))
+
+par(mfrow = c(1,2))
+
+boxplot(Adelie_female$body_mass_g, main = "Body mass of Adelie female",
+        ylab = "Body mass", xlab= "")
+
+boxplot(Adelie_male$body_mass_g, main = "Body mass of Adelie male",
+        ylab = "Body mass", xlab= "")
+
+```
+
+
+- **Q2 (2 pts.): Perform a one-sample t-test of the alternative hypothesis that female Adelie penguins have a body mass different from zero grams. Note that this is a very silly alternative hypothesis. Is this a one- or two-tailed test? Show your R-code.**
+
+*Answer: Is a two tailed test*
+
+```{r}
+Adelie_female <- droplevels(subset(penguins, sex == "female"))
+t.test(Adelie_female$body_mass_g, alternative = "two.sided", mu= 0 )
+```
+
+- **Q4 (2 pts.): Now, conduct a slightly less silly test: perform a one-sample t-test of the alternative hypothesis that male Adelie penguins have a mean body mass greater than 4000 grams. Is this a one- or two-tailed test?**
+
+*Answer: Is one tailed test*
+
+```{r}
+Adelie_male <- droplevels(subset(penguins, sex == "male"))
+t.test(Adelie_male$body_mass_g, alternative = "greater", mu = 4000)
+```
+
+- **Q5 (1 pt.): Describe your conclusions based on the p-value of the t-test.**
+
+- **Q6 (2 pts.): Conduct a two-sample t-test of the alternative hypothesis that male and female Adelie penguins have different mean body masses. Show your r-code.**
+
+*Answer: *
+
+```{r}
+t.test(Adelie_male$body_mass_g, Adelie_female$body_mass_g)
+```
+
+- **Q7 (1 pt.): Describe your conclusions based on the p-value of the t-test.**
+
+- **Q8 (2 pts.): Conduct a two-sample (one-tailed) t-test of the directional alternative hypothesis that male Adelie penguins are heavier than females.**
+
+```{r}
+
+t.test(Adelie_male$body_mass_g, Adelie_female$body_mass_g, alternative = "greater")
+
+```
+
+- **Q9 (2 pts.): Conduct a two-sample (one-tailed) t-test of the directional alternative hypothesis that male Adelie penguins are lighter than females.**
+
+```{r}
+t.test(Adelie_male$body_mass_g, Adelie_female$body_mass_g, alternative = "less")
+```
+
+
+

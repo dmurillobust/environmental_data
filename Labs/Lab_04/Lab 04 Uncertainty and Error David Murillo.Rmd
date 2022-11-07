@@ -1,0 +1,413 @@
+---
+title: 'Lab 04: Uncertainty and Error'
+author: "David Murillo"
+date: "September 27, 2022"
+output:
+  html_document:
+    theme: cerulean
+  word_document:
+    toc: yes
+---
+
+# Question {.tabset .tabset-pills}
+
+## Q1 Vector Code
+Instruction:
+
+Create four vectors of normally-distributed random numbers, norm_17, norm_30, norm_300, and norm_3000. You should tell R that you want your random deviates have a mean of 10.4 and a standard deviation of 2.4.
+norm_17 should have 17 elements, norm_30 should have 30 elements, norm_300 should have 300 elements, and norm_3000 should have 3000 elements.
+
+
+
+**(1 pt.) Show the code you used to create your vectors.**
+
+**Answer:**
+```{r}
+#Answer:
+norm_17 <- rnorm(17, 10.4, 2.4)
+norm_30 <- rnorm(30, 10.4, 2.4)
+norm_300 <- rnorm(300, 10.4, 2.4)
+norm_3000 <- rnorm(3000, 10.4, 2.4)
+```
+
+## Q2 Histogram Code
+
+Instruction:
+
+Create a figure including histograms of your vectors norm_17, norm_30, norm_300, and norm_3000.
+
+The histograms should all be on the same figure, arranged in panels (2 rows, 2 columns).
+
+Each histogram must have an informative title that indicates how many randomly generated data points were used to build the histogram.
+
+Save your figure to a file called lab_04_hist_01.png.
+Your figure should be 1600 pixels high, and 1500 pixels wide.
+It should have a resolution of 180 dpi.
+
+Check out the description of the res argument int he help entry for png().
+My walkthrough of saving figures to a file may be helpful to you.
+
+
+
+**(2 pts.) Include the R code you used to create your figure. Your answer should include code that builds the figure as well as saves it to a file.**
+
+**Answer:**
+```{r, warning= FALSE}
+#Answer:
+png(filename = "lab_04_hist_01.png", units = "px",
+    height = 1600, width = 1500, res = 180)
+
+par(mfrow = c(2, 2))
+hist(norm_17, xlim = c(0,20), main = "17 random normal observations")
+hist(norm_30, xlim = c(0,20), main = "30 random normal observations")
+hist(norm_300, xlim = c(0,20), main = "300 random normal observations")
+hist(norm_3000, xlim = c(0,20), main = "3000 random normal observations")
+
+dev.off()
+```
+
+
+## Q3 Histogram Figure
+
+**(4 pts.) Upload your lab_04_hist_01.png file to Moodle. Make sure you double check the image size and resolution requirements.**
+```{r}
+par(mfrow = c(2, 2))
+hist(norm_17, xlim = c(0,20), main = "17 random normal observations")
+hist(norm_30, xlim = c(0,20), main = "30 random normal observations")
+hist(norm_300, xlim = c(0,20),  main = "300 random normal observations")
+hist(norm_3000, xlim = c(0,20), main = "3000 random normal observations")
+```
+
+
+## Q4 Histogram Shapes 1
+
+**(2 pts.) Qualitatively describe the differences among the histograms.**
+
+**Answer: I could observe that between more observation the histograms take the normal distribution shape. The range of the values increase with the amount of observation, for 17 observations the range is between 5 and 16, and for 3000 observation the range is between 3 and 20. Also with more observation the mean and the median get closer.** 
+
+
+## Q5 Histogram Shapes 2
+
+**Explain why the shapes of the histograms are different.**
+
+**Answer: With more observation increase the precise and reduce the variance, with more observation we get more values around the mean making the Gauss' camp shape more notable.** 
+
+
+## Q6: (1 pt) What are the parameters and their values for the standard Normal distribution?
+
+**Answer: The average is 0 and the standard deviation is 1.**
+
+## Q7 Density Figure Code
+Instruction:
+
+Recall the code I used to create a plot of the density function of a standard normal distribution:
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+# Generate a vector of x-values
+x = seq(-6, 6, length.out = 1000)
+y = dnorm(x)
+
+plot(x, y, main = "Standard Normal PDF", type = "l", xlim = c(-3, 3))
+abline(h = 0)
+```
+
+What happens when you change the xlim values?
+
+A: The range of the x axe changed of values.
+
+Use the code above as a template to plot a density curve for a normal distribution with:
+
+mean = 10.4
+standard deviation = 2.4
+
+Include an informative title that states the mean and standard deviation values you used.
+
+Save your figure to a Scalable Vector Graphics (svg) file called norm_1.svg
+
+Use the svg() function to create your image.
+
+Make sure to check out the help entry for info on how to specify width and height in svg()
+
+If you are using a Mac and you receive errors about Cairo or Cairo.DLL, you may have trouble using svg. In this case use pdf() instead. Just make sure you name you file norm_1.pdf instead of norm_1.svg. The width and height arguments have the same units in pdf() and svg().
+
+
+**(2 pts.) Include the R code you used to create your figure. Your answer should include code that builds the figure as well as saves it to a file.**
+
+```{r}
+svg(filename = "norm_1.svg")
+
+x = seq(0, 20, length.out = 1000)
+y = dnorm(x, 10.4, 2.4)
+
+plot(x, y, type = "l",
+     main = "Standard Normal PDF Mean used: 10.4, median used: 2.4")
+abline(h = 0)
+
+dev.off()
+```
+
+
+## Q8 Density Figure File
+
+**(2 pts.) Upload norm_1.svg (or norm_1.pdf).**
+
+```{r}
+x = seq(0, 20, length.out = 1000)
+y = dnorm(x, 10.4, 2.4)
+
+plot(x, y, type = "l",
+     main = "Standard Normal PDF Mean used: 10.4, median used: 2.4")
+abline(h = 0)
+```
+
+## Q9 Random Data Set
+Intruction:
+
+Review the section of the lab instructions in which I created a data.frame of random data.
+
+Experiment with different sets of randomly-generated data:
+
+Try different numbers of points.
+Try different distributions in the x- and y- values.
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+my_x_1 <- runif(1000, 1, 30)
+my_x_2 <- rnorm(1000, 15, 2)
+my_x_3 <- rpois(1000, 15)
+my_x_4 <- rbinom(1000, 1, 0.5)
+
+my_x_1_2 <- runif(500, 1, 30)
+my_x_2_2 <- rnorm(500, 15, 2)
+my_x_3_2 <- rpois(500, 15)
+my_x_4_2 <- rbinom(500, 1, 0.5)
+
+my_x_1_3 <- runif(100, 1, 30)
+my_x_2_3 <- rnorm(100, 15, 2)
+my_x_3_3 <- rpois(100, 15)
+my_x_4_3 <- rbinom(100, 1, 0.5)
+
+my_y_1 <- pnorm(my_x_1)
+my_y_2 <- pnorm(my_x_2)
+my_y_3 <- ppois(my_x_3, 15)
+my_y_4 <- pbinom(my_x_4, 1, 0.5)
+
+my_y_1_2 <- pnorm(my_x_1_2)
+my_y_2_2 <- pnorm(my_x_2_2)
+my_y_3_2 <- ppois(my_x_3_2, 15)
+my_y_4_2 <- pbinom(my_x_4_2, 1, 0.5)
+
+my_y_1_3 <- pnorm(my_x_1_3)
+my_y_2_3 <- pnorm(my_x_2_3)
+my_y_3_3 <- ppois(my_x_2_3, 15)
+my_y_4_3 <- pbinom(my_x_2_3, 1, 0.5)
+
+set.seed(12)
+
+my2_x_1 <- runif(1000, 1, 30)
+my2_x_2 <- rnorm(1000, 15, 2)
+my2_x_3 <- rpois(1000, 15)
+my2_x_4 <- rbinom(1000, 1, 0.5)
+
+my2_x_1_2 <- runif(500, 1, 30)
+my2_x_2_2 <- rnorm(500, 15, 2)
+my2_x_3_2 <- rpois(500, 15)
+my2_x_4_2 <- rbinom(500, 1, 0.5)
+
+my2_x_1_3 <- runif(100, 1, 30)
+my2_x_2_3 <- rnorm(100, 15, 2)
+my2_x_3_3 <- rpois(100, 15)
+my2_x_4_3 <- rbinom(100, 1, 0.5)
+
+my2_y_1 <- pnorm(my2_x_1)
+my2_y_2 <- pnorm(my2_x_2)
+my2_y_3 <- ppois(my2_x_3, 15)
+my2_y_4 <- pbinom(my2_x_4, 1, 0.5)
+
+my2_y_1_2 <- pnorm(my2_x_1_2)
+my2_y_2_2 <- pnorm(my2_x_2_2)
+my2_y_3_2 <- ppois(my2_x_3_2, 15)
+my2_y_4_2 <- pbinom(my2_x_4_2, 1, 0.5)
+
+my2_y_1_3 <- pnorm(my2_x_1_3)
+my2_y_2_3 <- pnorm(my2_x_2_3)
+my2_y_3_3 <- ppois(my2_x_2_3, 15)
+my2_y_4_3 <- pbinom(my2_x_2_3, 1, 0.5)
+
+```
+
+Plot your data! Try making histograms, boxplots, and scatterplots with different plotting parameters:
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+par(mfrow = c(3, 4))
+
+plot(my_x_1, my_y_1)
+plot(my_x_2, my_y_2)
+plot(my_x_3, my_y_3)
+plot(my_x_4, my_y_4)
+
+plot(my_x_1_2, my_y_1_2)
+plot(my_x_2_2, my_y_2_2)
+plot(my_x_3_2, my_y_3_2)
+plot(my_x_4_2, my_y_4_2)
+
+plot(my_x_1_3, my_y_1_3)
+plot(my_x_2_3, my_y_2_3)
+plot(my_x_3_3, my_y_3_3)
+plot(my_x_4_3, my_y_4_3)
+
+
+
+
+```
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+par(mfrow = c(3, 4))
+
+plot(my2_x_1, my2_y_1)
+plot(my2_x_2, my2_y_2)
+plot(my2_x_3, my2_y_3)
+plot(my2_x_4, my2_y_4)
+
+plot(my2_x_1_2, my2_y_1_2)
+plot(my2_x_2_2, my2_y_2_2)
+plot(my2_x_3_2, my2_y_3_2)
+plot(my2_x_4_2, my2_y_4_2)
+
+plot(my2_x_1_3, my2_y_1_3)
+plot(my2_x_2_3, my2_y_2_3)
+plot(my2_x_3_3, my2_y_3_3)
+plot(my2_x_4_3, my2_y_4_3)
+
+```
+
+**(3 pts.) Show the R code you used to create one of the random datasets in your figure.**
+
+**Answer:**
+```{r}
+my_x_3 <- rpois(1000, 15)
+```
+
+
+## Q10 Random Data Image File
+
+**(2 pts.) Upload an image file of your figure. It may be in png (raster graphics), svg (vector graphics), or pdf (vector graphics) format.**
+
+```{r, echo=FALSE}
+png(filename = "lab_04_random_01.png", units = "px",
+    height = 1600, width = 1500, res = 180)
+
+plot(my2_x_3_2, my2_y_3_2, main = "Relationship between 2 random variables",
+     ylab= "y", xlab= "x")
+
+dev.off()
+
+plot(my2_x_3_2, my2_y_3_2, main= "Relationship between 2 random variables",
+     ylab= "y", xlab= "x")
+```
+
+## Q11 Random Data Model Fit (Q 13-14)
+
+Choose one of the datasets you created for the previous question.
+Adapting the code in the lab walkthrough, visually fit a linear deterministic function through the data.
+
+Make sure you save your parameters to variables so you can use them in the next question.
+Create a plot of your simulated data and your fitted linear model.
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+head(my2_x_3_2)
+head(my_y_3_2)
+```
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# Calculates the value of y for a linear function, given the coordinates
+# of a known point (x1, y1) and the slope of the line.
+line_point_slope = function(x, x1, y1, slope)
+{
+  get_y_intercept = 
+    function(x1, y1, slope) 
+      return(-(x1 * slope) + y1)
+  
+  linear = 
+    function(x, yint, slope) 
+      return(yint + x * slope)
+  
+  return(linear(x, get_y_intercept(x1, y1, slope), slope))
+}
+```
+
+
+**(3 pts.) Show the R code you used to create one of the random datasets in your figure.**
+
+```{r}
+set.seed(12)
+
+my2_x_3_2 <- rpois(500, 15)
+
+my2_y_3_2 <- ppois(my2_x_3_2, 15)
+
+dataset_1 <- data.frame(x = my2_x_3_2, y = my2_y_3_2)
+```
+
+
+## Q12 Random Data Model Fit Image File
+
+**(2 pts.) Upload an image file of your figure. It may be in png (raster graphics), svg (vector graphics), or pdf (vector graphics) format.**
+
+
+```{r, echo=FALSE}
+png(filename = "lab_04_random_02.png", units = "px",
+    height = 1600, width = 1500, res = 180)
+
+plot(x = dataset_1$x, y = dataset_1$y, main = "Relationship between x and y",
+     ylab= "y", xlab= "x")
+curve(line_point_slope(x, 5, 0, 0.05 ), add = TRUE)
+
+dev.off()
+
+plot(x = dataset_1$x, y = dataset_1$y, main = "Relationship between x and y",
+     ylab= "y", xlab= "x")
+curve(line_point_slope(x, 5, 0, 0.05 ), add = TRUE)
+
+```
+
+## Q13 Random Data Model Residuals (Q 13-14)
+
+Instruction:
+
+Use the dataset you chose for the previous question.
+Adapting the code in the lab walkthrough, create a column of predicted y-values.
+Adapting the code in the lab walkthrough, create a column of residuals.
+
+
+**(2 pts.) Paste the R code you used to create create the columns of predicted values and residuals.**
+
+```{r}
+predicted_y <- line_point_slope(dataset_1$x,  5, 0, 0.05)
+
+resids <- predicted_y - dataset_1$y
+
+dataset_1$predicted_y <- predicted_y
+dataset_1$resids <- resids
+```
+
+The residuals are the difference between the predicted and observed values
+
+## Q14 Random Data Model Residual Plot
+
+**(3 pts.) In your report, include the two following figures**
+
+- A histogram of the model’s residuals.
+
+```{r, echo=FALSE}
+hist(dataset_1$resids, main = "Resids histogram", ylab = "Resids")
+```
+
+
+- A scatterplot of your model’s predicted values (on the x-axis) and residuals (on the y-axis).
+Make sure your figure has appropriate title, legend, and other annotation as needed.
+
+```{r, echo=FALSE}
+plot(dataset_1$predicted_y, dataset_1$resids, main = "Relationship between predicted values and residuals", ylab = "Residuals", xlab = "Predicted")
+```
+
+

@@ -1,0 +1,115 @@
+---
+title: 'Code Chunks, Chunk Options, and Tabs'
+author: "David Murillo"
+date: "Octuber 6, 2022"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+    theme: lumen
+  word_document:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r histogram_penguins, echo = FALSE}
+require(palmerpenguins)
+hist(penguins$body_mass_g)
+```
+```{r multi_panel_1, echo= FALSE, fig.height= 10, fig.width= 10}
+par(mfrow = c(2, 2))
+
+hist(
+penguins$body_mass_g,
+main = "Histogram of Body Mass",
+xlab = "Body Mass (g)")
+
+hist(
+penguins$flipper_length_mm,
+main = "Histogram of Flipper Length",
+xlab = "Flipper Length (mm)")
+
+boxplot(
+body_mass_g ~ species, data = penguins,
+main = "Body Mass and Species",
+ylab = "Body Mass (g)"
+)
+
+boxplot(
+flipper_length_mm ~ species, data = penguins,
+main = "Flipper Length and Species",
+ylab = "Flipper Length (mm)"
+)
+
+```
+# A New Section With Tabs {.tabset}
+
+## Tab 1
+
+*This is my first tme working with Tabs, Looks that will be funny!*
+
+## Tab 2
+
+Boxplot of flipper length vrs species of pinguins:
+
+```{r tab_graph 1, echo = FALSE}
+boxplot(
+  flipper_length_mm ~ species, data = penguins,
+  main = "Flipper Length and Species",
+  ylab = "Flipper Length (mm)"
+)
+
+```
+
+## Tab 3
+
+Here's a numbered list:
+
+1. Item 1
+1. Item 2
+1. Item 3
+1. **Item 4** (in bold)
+
+# New 1st Level header (not there are no tabs)
+
+
+## Subsection 1
+
+This section is not in a tab
+
+## Subsection 2
+
+Still no tabs!
+
+# Tab Section 2 {.tabset .tabset-pills}
+
+This seciton uses a 'pill style' of tabs!
+
+## Introducction to pinguins
+
+The pinguins are birds adapt to swin very weel, they can not fly, but swin like fish.
+
+## Boxplot
+
+Flipeer length vrs species of pinguins:
+
+```{r tab_graph 2, echo = FALSE}
+boxplot(
+  flipper_length_mm ~ species, data = penguins,
+  main = "Flipper Length and Species",
+  ylab = "Flipper Length (mm)"
+)
+
+```
+
+## The pinguins are
+
+Characteristic:
+
+1. Are birds
+1. Can not fly
+1. Can swin
+1. **Live in very cold place**

@@ -1,0 +1,104 @@
+---
+title: "Week 6 Question"
+author: "David Murillo"
+date: "Octuber 16, 2022"
+output:
+  html_document:
+    theme: cosmo
+---
+
+### **I worked with `Hoa Ninh` and `Theint Thandar Bol`**
+
+# Question {.tabset .tabset-pills}
+
+## Null Hypothesis
+
+- **Q1 (3 pts.): In a short paragraph, describe a baseline scenario regarding seed predation. At the end, state the null hypothesis for seed predation.**
+
+Duncan and Duncan 2000, quantified how many times seeds of two different species disappeared, the seed that disappeared could be taken by depredators, but this is not sure. The data was taken in Kibale National Park, Uganda. The seeds are from two species, *Polyscias fulva* (seed mass < 0.01 g), and *Pseudopondias microcarpa* (seed mass ~ 50 g). This data was used to answer, do seed predation rates vary among species?. 
+
+In the Bolker, he used a seed predation experiment to demonstrate the statistical frameworks. The ecological question given in the Bolker is “Is there differential predation on the seeds between these two species?”. Therefore, the experiment can have two hypotheses.
+
+- Null hypothesis: There is no difference in seed predation between these two species.
+
+- Alternative hypothesis: There is statistically significant difference in seed predation between these two species.
+
+To answer this, there are three frameworks for statistical inference. The first one, is the classical frequentist, where we have a null hypothesis as point to start and to reject will use the p-value. In the given data, the observed proportions of the time that seeds disappear for POL = 0.124 and PSD = 0.034. The ratio of the predation probabilities for POL and PSD is “3.62”. When the experiment calculate the p-value based on the given data by Fisher’s exact test, p-value is less than 0.05, so we can eliminate the null hypothesis. According to Neyman-Pearson decision rule, we can conclude that there is statistically significant difference in seed predation between these two species.
+
+The second framework is the likelihood-based where we use the Maximun likelihood estimate, and the last one is the Bayesian, where we use values distribution. The result of the three frameworks was that there is a difference between seeds predation among species
+
+## Seed Predation Rates
+
+- **Q2 (3 pts.): Paste the R code you used to complete the table and calculate the rates.**
+
+ *Answer:*
+ 
+```{r}
+rm(list = ls())
+
+pol_n_predation = 26
+pol_n_no_predation = 184
+pol_n_total = 210
+pol_predation_rate = pol_n_predation/pol_n_total 
+
+psd_n_predation = 25
+psd_n_no_predation = 706
+psd_n_total = 731
+psd_predation_rate = psd_n_predation / psd_n_total
+```
+
+
+```{r}
+print(
+  paste0(
+    "The seed predation rate for Polyscias fulva is: ",
+    round(pol_predation_rate, digits = 3))) 
+
+print(
+  paste0(
+    "The seed predation rate for Pseudospondias microcarpa is: ",
+    round(psd_predation_rate, digits = 3)))
+```
+
+## Seed Predation Table
+
+- **Q3 (3 pts.): Show your table with the missing values filled in.**
+
+```{r, echo = FALSE, warning=FALSE}
+
+# Create a table and fill in the missing values:
+
+Species <- c("Polyscias fulva (pol)", "Pseudospondias microcarpa (psd)")
+
+"Any taken" <- c(pol_n_predation, psd_n_predation)
+
+"None taken" <- c(pol_n_no_predation, psd_n_no_predation)
+
+N <- c(pol_n_total, psd_n_total)
+
+"Predation rate" <- c(pol_n_predation/pol_n_total, psd_n_predation / psd_n_total)
+
+Seed_predation_table <- data.frame(Species, `Any taken`, `None taken`, N, `Predation rate`)
+
+library(knitr)
+
+kable(Seed_predation_table)
+
+```
+
+## Seed Predation Ratio
+
+- **Q4 (2 pts.): Report the seed ratio of seed predation proportions and show the R code you used to do the calculation.**
+
+ *Answer:*
+```{r}
+(Ratio_predation <- (pol_n_predation/pol_n_total) / (psd_n_predation / psd_n_total) )
+```
+
+or
+
+```{r}
+(Ratio_predation <- (26/210) / (25 / 731) )
+
+```
+

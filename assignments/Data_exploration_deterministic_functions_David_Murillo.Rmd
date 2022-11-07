@@ -1,0 +1,261 @@
+---
+title: "Data exploration and deterministic functions"
+author: "David Murillo"
+date: "October 8, 2022"
+output:
+  html_document:
+    theme: cerulean
+---
+
+
+```{r "load packagues", warning=FALSE, echo=FALSE, include= FALSE}
+library(here)
+```
+
+
+
+```{r "load data set", warning=FALSE, echo=FALSE, include= FALSE}
+habitat <- read.csv(here("data", "hab.sta.csv"))
+```
+
+
+```{r "Histograms", warning=FALSE, echo=FALSE, include= FALSE }
+#Examine histograms of the three terrain variables.
+
+#Plot histograms of the following terrain variables:
+#elevation
+#aspect
+#slope
+
+hist(habitat$elev, main = "Histogram of elevation",
+     xlab= "Elevation")
+
+hist(habitat$aspect, main = "Histogram of aspec",
+     xlab= "Aspec")
+
+hist(habitat$slope, main = "Histogram of Slope",
+     xlab= "Slope")
+```
+
+
+```{r "fuction", warning=FALSE, echo=FALSE, include= FALSE }
+# Calculates the value of y for a linear function, given the coordinates
+# of a known point (x1, y1) and the slope of the line.
+line_point_slope = function(x, x1, y1, slope)
+{
+  get_y_intercept = 
+    function(x1, y1, slope) 
+      return(-(x1 * slope) + y1)
+  
+  linear = 
+    function(x, yint, slope) 
+      return(yint + x * slope)
+  
+  return(linear(x, get_y_intercept(x1, y1, slope), slope))
+}
+```
+
+
+```{r "scatterplot", warning=FALSE, echo=FALSE, include= FALSE }
+#1. Create scatterplots of total basal area and the terrain variables (consult the metadata #file to see which column(s) you need). 
+
+#Basal area should be on the y-axis.
+
+#Visually inspect the plots and fit a linear function to each of the scatterplots using the #parameterization functions provided above.
+
+#You’ll need this fitted model for the assignment questions.
+
+
+plot(habitat$elev, habitat$ba.tot)
+curve(line_point_slope(x, x1 = 3.5, y1 = 1.25, slope = 0.4), add = TRUE)
+
+plot(habitat$aspect, habitat$ba.tot)
+curve(line_point_slope(x, x1 = 3.5, y1 = 1.25, slope = 0.4), add = TRUE)
+
+plot(habitat$slope, habitat$ba.tot)
+curve(line_point_slope(x, x1 = 3.5, y1 = 1.25, slope = 0.4), add = TRUE)
+
+
+```
+
+# Question {.tabset .tabset-pills}
+
+## **1. Terrain Histogram**
+Instructions:
+
+Create histograms for the three terrain variables:
+
+1. elevation 
+2. slope
+3. aspect.
+
+Plot all three histograms in one figure and include it in your report.
+
+**Answer:**
+
+```{r Histogram Terrain Variable, fig.height=3, fig.width=9, echo= FALSE}
+par(mfrow = c(1, 3))
+
+hist(habitat$elev, main = "Histogram of elevation",
+     xlab= "Elevation", breaks = 20)
+
+hist(habitat$aspect, main = "Histogram of aspec",
+     xlab= "Aspec", breaks = 20)
+
+hist(habitat$slope, main = "Histogram of Slope",
+     xlab= "Slope", breaks = 20)
+
+```
+
+## 2. **Elevation Histograma Interpretation**
+
+Consider the distribution of elevations at the bird census sample sites.
+
+Interpret the shape of the elevation histogram in non-technical language that a non-scientist audience would understand. Some points to consider:
+
+1. Are there more high- or low-elevation sampling sites?
+2. Is there an even distribution of sampling site elevation?
+
+Your answer should be 1-2 short paragraphs in length.
+
+**Answer: On the elevation histogram we could see that, the majors of the sites are between 350m to 400m of elevation, these are intermediate elevation. also we could see that the distribution is a little symmetrical, but the right tail is a little bit longer to reach 872 meters**
+
+## 3. **Slope units**
+What are the units of slope in this data set?
+
+**Answer: In this case are in percent slope (%) and is a numeric variable from 0 to 110] **
+
+## **4. Slope Histogram Interpretation**
+
+Consider the distribution of slopes at the bird census sample sites.
+
+Interpret the shape of the slope histogram in non-technical language that a non-scientist audience would understand. Some points to consider:
+
+1. Are most sample sites flat?
+2. Is there an even mixture of steep and shallow slopes?
+
+Your answer should be 1-2 short paragraphs in length.
+
+**Answer: The sites have a mixture of steep and shallow slopes The majors of sites are between 40 and 70, there are few sample sites with hight steep slope higher that 80 **
+
+## 5. **Aspect**
+
+Briefly define aspect, describing the units used in this dataset.
+
+**Answer: Aspect is the direction of the slope faces relative to the sun (compass direction), which affects the amount of water that moves through the soil. The north side tends to have more water because there’s less evaporation and, as a result, potentially more vegetation. In addition, the north aspect’s colder soil temperatures slow soil chemical processes. A soil with a southern aspect tends to have grass vegetation, warmer soil temperatures and more evaporation. **  
+
+**Aspect was measurement on degrees between 0 to 360 ** 
+
+## 6. **Aspect Histogram Interpretation**
+
+Consider the distribution of aspect at the bird census sample sites.
+
+Interpret the shape of the aspect histogram in non-technical language that a non-scientist audience would understand. Some points to consider:
+
+1. Do the sampling sites tend to be on north-facing slopes?
+South-facing?
+2. Evenly distributed?
+
+Your answer should be 1-2 short paragraphs in length.
+
+**Answer: The samples sites has a mixture of the aspect, some sample size have north-face and others have south-face slopes, the distrubition of the sample is not simetrical and this could dot not have normal distrubution. **
+
+
+## 7. **Terrain/Basal Area Linear Model**
+
+Instructions:
+
+Create scatterplots of total basal area and each of the the terrain variables: 
+
+- elevation
+- slope
+- aspect.
+
+Basal area should be on the y-axis.
+Visually inspect the plots and fit a linear function to each terrain variable.
+Review the linear model parameterization section of the assignment walkthrough if needed.
+
+**Answer: **
+
+
+```{r "scatterplot2", warning=FALSE, echo=FALSE, include= TRUE, fig.width= 9, fig.height=3 }
+#1. Create scatterplots of total basal area and the terrain variables (consult the metadata #file to see which column(s) you need). 
+
+#Basal area should be on the y-axis.
+
+#Visually inspect the plots and fit a linear function to each of the scatterplots using the #parameterization functions provided above.
+
+#You’ll need this fitted model for the assignment questions.
+
+par(mfrow = c(1, 3))
+
+plot(habitat$elev, habitat$ba.tot, main= "Relationship beteenn Basal Area and Elevation",
+     ylab= "Basal Area", xlab= "Elevation")
+curve(line_point_slope(x, x1 = 3.5, y1 = 1.25, slope = 0.1), add = TRUE)
+
+plot(habitat$aspect, habitat$ba.tot, main= "Relationship beteenn Basal Area and Aspect",
+     ylab= "Basal Area", xlab= "Aspect")
+curve(line_point_slope(x, x1 = 3.5, y1 = 1.25, slope = 0.2), add = TRUE)
+
+plot(habitat$slope, habitat$ba.tot, main= "Relationship beteenn Basal Area and Slope",
+     ylab= "Basal Area", xlab= "Slope")
+curve(line_point_slope(x, x1 = 3.5, y1 = 1.25, slope = 0.4), add = TRUE)
+
+
+```
+
+## 8. **Terrain/Basal Model Interpretation**
+
+For each terrain variable (elevation, slope, aspect), describe the relationship you observe and your model fit. You should consider
+
+Is there a noticeable association?
+If so, is it linear?
+Based on a visual assessment, is your linear model a good fit for the data, why or why not?
+
+**Answer: **
+
+**1. Elevation model, looks that there are a relation between Basal Area and elevation, but this relation is not good explain by the linear model, we could try to use a quadratic model to explain better this relationship. **
+
+**2. Aspectn model, looks that there are not a relation between Basal Area and aspect, I think that the model not have good fix, we should made a statistic test to test my suppositon. **
+
+
+**3. Slope model, looks that there are a relation between Basal Area and slope, but this relation is not good explain by the linear model, we could try to use a quadratic model to explain better this relationship. **
+
+**I will try quadratic model fix **
+
+```{r warning=FALSE, echo=FALSE, include= TRUE, fig.width= 4, fig.height=6, fig.align='center'}
+
+library(ggplot2)
+library(cowplot)
+
+A <- ggplot(data= habitat, aes(x= elev, y= ba.tot))+
+  geom_point()+
+  stat_smooth(method = lm, formula = y ~ x + I(x^2))+
+  labs(title = "Relationship between Basal Area and Elevation",
+       y= "Basal Area",
+       x= "Elevation")+
+  theme_classic()
+
+B<- ggplot(data= habitat, aes(x= aspect, y= ba.tot))+
+  geom_point()+
+  stat_smooth(method = lm, formula = y ~ x + I(x^2))+
+  labs(title = "Relationship between Basal Area and Aspect",
+       y= "Basal Area",
+       x= "Aspect")+
+  theme_classic()
+
+C<- ggplot(data= habitat, aes(x= slope, y= ba.tot))+
+  geom_point()+
+  stat_smooth(method = lm, formula = y ~ x + I(x^2))+
+  labs(title = "Relationship between Basal Area and Slope",
+       y= "Basal Area",
+       x= "Slope")+
+  theme_classic()
+
+plot_grid(A, B, C, cols = 1)
+```
+
+
+
+
+

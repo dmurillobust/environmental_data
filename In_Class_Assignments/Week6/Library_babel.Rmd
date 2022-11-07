@@ -1,0 +1,20 @@
+---
+title: "In-Class Library of Babel"
+author: "David Murillo"
+date: "October 10, 2022"
+output:
+  html_document:
+    theme: cerulean
+
+---
+
+You can use the following code to generate random 3-letter words.
+
+- Run it several times and see how many tries it takes to get a real English word (or a word in another language you might know).
+
+```{r}
+cat(letters[sample(26, size = 3, replace = T)], sep = "")
+
+
+```
+

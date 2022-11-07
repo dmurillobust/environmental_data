@@ -1,0 +1,150 @@
+---
+title: "In-Class Probability 3: Calculations In R"
+author: "David Murillo"
+date: "October 10, 2022"
+output:
+  html_document:
+    theme: cerulean
+
+---
+
+# Question {.tabset .tabset-pills}
+
+## Binomial Probabilities
+
+- **Q1 (1 pt.): If I wanted to use a binomial distribution to model my six forest plots, what values should I use for the two parameters of a binomial distribution?**
+
+*Answer:*
+```{r}
+n = 6
+p = 4/6
+
+dbinom(1, size= n ,pro = p)
+```
+
+
+- **Q2 (1 pt.): Use dbinom to calculate the probability of observing birds in exactly four of the six patches. Include your R-code in your answer.**
+
+*Answer:*
+
+```{r}
+n = 6
+p = 4/6
+
+dbinom(4, size= n ,pro = p)
+```
+
+- **Q3 (1 pt.): Now, suppose I did a survey and observed no birds in my plots. Use dbinom to calculate the probability of observing no presences.**
+
+*Answer:*
+```{r}
+n = 6
+p = 4/6
+
+dbinom(0, size= n ,pro = p)
+```
+
+
+## Binomial cumulative probabilities: p-functions
+
+- **Q4 (1 pt.): Back to the binomial scenario (bird presence/absence in 6 forest plots).**
+
+*Answer:*
+```{r}
+n = 6
+p= 4/6
+pbinom(q = 4, size = n , p= p)
+
+
+```
+
+
+Now use pbinom to calculate the probability of observing four or fewer presences in the 6 plots. Show your R code.
+
+- **Q5 (1 pt.): Now use pbinom and the law of total probability to calculate the probability of observing four or more presences in the 6 plots. Show your R code.**
+
+*Answer:*
+```{r}
+n = 6
+p= 4/6
+1 - pbinom(q = 3, size = n , p= p)
+
+
+```
+```
+
+
+## Normal Probabilities
+
+- **Q6 (1 pt.): Are you more likely to observe a value of 1.0 or 2.0?**
+
+*Answer: 1*
+
+- **Q7 (1 pt.): What is the probability of observing a value of 1.0 or less? Show the R code you used to find your answer.**
+
+*Answer:*
+
+```{r}
+pnorm(1, mean= 0, sd= 1)
+
+```
+
+
+- **Q8 (1 pt.): What is the probability of observing a value between 1.0 and 2.0? Show the R code you used to find your answer.**
+
+*Answer:*
+
+0.135
+
+```{r}
+
+(pnorm(2, mean = 0, sd= 1))  - (pnorm(1, mean = 0, sd = 1))
+
+
+```
+
+
+## Normal plots
+
+- **Q9 (2 pts.): Show the complete R-code you used to create your plot. Make sure you include all the code to recreate your plot in a fresh R session.**
+
+*Answer:*
+
+```{r}
+n = 1000
+
+x = seq(from = -10, to = 10, length.out = n)
+
+y = dnorm(x, mean = 0, sd = 1)
+y2 = dnorm(x, mean = 0, sd = 2)
+y3 = dnorm(x, mean = -2, sd = 1)
+
+# plot!
+plot(y ~ x, type = "l", ylab = "Probability Density")
+plot(y2 ~ x, type = "l", add= TRUE)
+plot(y3 ~ x, type = "l", add= TRUE)
+
+y2 = pnorm(x, mean = 0, sd = 1)
+
+# plot!
+plot(y2 ~ x, type = "l", ylab = "Probability Density")
+
+
+
+```
+
+
+- **Q10 (1 pt.): Include a figure of your plot.**
+
+*Answer:*
+
+## Binomial plots
+
+- **Q11 (2 pts.): Show the complete R-code you used to create your plot. Make sure you include all the code to recreate your plot in a fresh R session.**
+
+*Answer:*
+
+- **Q12 (1 pt.): Include a figure of your plot.**
+
+*Answer:*
+

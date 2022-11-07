@@ -1,0 +1,70 @@
+---
+title: "In-Class Data Exploration 2"
+output: html_notebook
+authoe: "David Murillo"
+date: "September 27, 2022"
+---
+
+#Load packages
+```{r}
+require(here)
+require(psych)
+```
+
+#Load datasets
+```{r}
+dat_bird <- read.csv(here("data", "bird.sta.csv"))
+dat_habitat <-  read.csv(here("data", "hab.sta.csv"))
+
+```
+
+#Bird habitat data exploration
+```{r}
+colnames(dat_habitat)
+```
+#Bird count data
+Use the hist() function to explore the distributions of counts of birds at the various study sites.
+
+```{r}
+hist(dat_bird$CBCH)
+```
+I used the arguments xlab = "Number of birds counted" and breaks = 0:7 - 0.5 with hist() to produce the following:
+
+```{r}
+hist(dat_bird$CBCH, xlab =  "Number of birds counted", breaks = 0:7 - 0.5)
+```
+#Bird Count Histograms
+Create some histograms of bird counts. Experiment with the breaks argument.
+
+You may want to try to re-create my histogram above as a first step.
+
+If your breaks argument does not span the range of count values you will get an error. You may need to try a higher upper limit.
+You could also use the max() function to determine the highest number of counts of your bird species column.
+
+```{r}
+hist(dat_bird$WIWR, breaks = 0:8, ylab = "Number of birds counted",
+     main = "Histogram of Troglodytes hiemalis")
+```
+
+
+## Instructions
+As a group you should work through the following:
+
+#Import the datasets, and take a look at the metadata.
+#Explore the habitat data using pair plots.
+
+```{r}
+pairs(dat_habitat[, c("elev", "slope", "ba.con", "ba.tot")])
+```
+
+
+Explore the distributions of counts of bird species using histograms.
+
+```{r}
+hist(dat_bird$WIWR, breaks = 0:8, ylab = "Number of birds counted",
+     main = "Histogram of Troglodytes hiemalis")
+
+hist(dat_bird$WIWA, xlab = "Number of Birds Counted", main = "Wilson's Warbler Abundance", breaks = 0:7 - 0.5, col = "gold2") 
+```
+
+

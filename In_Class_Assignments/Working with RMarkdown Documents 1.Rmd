@@ -1,0 +1,31 @@
+---
+title: "R Markdown Documents - Part 1"
+subtitle: "Analysis of Environmental Data"
+author: "David Murillo"
+date: '2022-09-24'
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: lumen
+  
+---
+
+# Introduction
+
+I am **David Murillo** graduate student in Environmental Conservation Master Program, in the University of Massachusetts Amherst, I am study birds population on coffee crops from Honduras, my advisor is *David King* who I meet since 2016, we are studding birds in Integrated Open Canopy coffee, shade coffee and forest system. 
+
+# Concepts list
+
+1.  Learn how to understand the components of the lineal model 
+2.  Learn how to use RMarkdown to made reports
+3.  Understand the theories compnent of the model that we will learn in classes
+4.  Learn how to made plot in science format 
+
+# Course list
+
+* Applied Ecological Statistic
++ Landscape ecology and conservation
++ Ornithology
+
+

@@ -1,0 +1,510 @@
+---
+title: 'Lab 09: Modeling Data 2'
+author: "David Murillo"
+date: "November 2, 2022"
+output:
+  html_document:
+    theme: cosmo
+---
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+library(here)
+library(knitr)
+
+catrate = read.csv(here("data", "catrate.csv"))
+
+# Reproductive Success and Failure
+# How likely is a response of 33/61 if the reproductive success and failure are equally likely, i.e., Pr(success)=0.5?
+#We can use a binomial test for this, specifying the number of successes (33) and the total sample size (61), as follows:
+
+n_success = sum(catrate$success)
+n_years = sum(catrate$years)
+binom.test(n_success, n_years)
+
+
+# Let’s define variables to hold the late- and normal-filling rates:
+
+late_fill_rate = 2/7
+normal_fill_rate = 1 - late_fill_rate
+
+# What is the evidence that reproductive success is more or less frequent than the normal-filling rate?
+
+binom.test(
+  n_success,
+  n_years,
+  p = normal_fill_rate) 
+
+#In addition, note again that the default test is a two-sided alternative
+
+binom.test(
+  n_success,
+  n_years,
+  p = normal_fill_rate,
+  alternative ='less')
+
+
+# Comparing two variances
+
+# F-distribution Example: Vegetation Data
+
+veg = read.csv(here("data", "vegdata.csv"))
+
+boxplot(pine ~ treatment, data = veg)
+
+# Variance test
+
+var.test(
+  pine ~ treatment,
+  data = veg,
+  subset = treatment %in% c('control','clipped'))
+
+# F-tests Assumes Normality
+
+shapiro.test(veg$pine[veg$treatment=="control"])
+
+shapiro.test(veg$pine[veg$treatment=="clipped"])
+
+# Note, because the Shapiro-Wilk test is a one-sample test, we had to select the records for each treatment and conduct separate tests.
+
+
+# Non-parametric Variance Test
+
+fligner.test(
+  pine ~ treatment,
+  data = veg,
+  subset = treatment %in% c('control','clipped'))
+
+#The ksample parametric test is called Bartlett’s test, which we can use to test for homogeneity of variances among all four treatment levels as follows:
+
+bartlett.test(pine ~ treatment, data=veg)
+
+fligner.test(pine ~ treatment, data = veg)
+
+# Comparing two sample means
+
+# T-test
+
+t.test(
+  pine ~ treatment,
+  data = veg,
+  subset = treatment %in% c('control','clipped'))
+
+# Wilcox test
+
+wilcox.test(
+  pine ~ treatment,
+  data = veg,
+  subset = treatment %in% c('control','clipped'))
+
+# Tests for paired samples
+
+control = veg$pine[veg$treatment=='control']
+clipped = veg$pine[veg$treatment=='clipped']
+
+t.test(control, clipped, paired=TRUE)
+
+wilcox.test(control, clipped, paired=TRUE)
+
+# Correlation
+
+# Marbled Salamander
+
+disp = read.csv(here("data", "dispersal.csv"))
+
+plot(disp$disp.rate.ftb, disp$disp.rate.eb)
+
+cor.test(
+  disp$disp.rate.ftb,
+  disp$disp.rate.eb,
+  use='complete.obs')
+
+# Note, we needed to specify the use=’complete.obs’ argument to address the missing values for the 700 m distance class (for which there are no ponds in this particular distance interval).
+
+# Let’s try a test of the Spearman’s rank correlation:
+cor.test(
+  disp$disp.rate.ftb,
+  disp$disp.rate.eb,
+  use='complete.obs',
+  method='spearman')
+
+# Comparing two distributions
+
+#Let’s see what the ecdf for the sample of juvenile dispersal rate looks like:
+
+plot(
+  ecdf(disp$disp.rate.ftb),
+  verticals=TRUE)
+
+
+# Now let’s add the ecdf for the adult dispersal rate, but change the line type (lty) so that we can distinguish it from the ecdf for the juvenile dispersal rate
+
+plot(
+  ecdf(disp$disp.rate.ftb),
+  verticals=TRUE)
+
+plot(
+  ecdf(disp$disp.rate.eb),
+  verticals=TRUE,
+  lty=3,
+  add=TRUE)
+
+ks.test(disp$disp.rate.ftb, disp$disp.rate.eb)
+
+# Comparing two or more proportions
+
+# Sex-linked killing
+
+prop.test(c(4,16),c(40,250))
+
+# Dependence of variables in a contingency table
+
+# Contingency: Chi-square test
+
+owls = matrix(c(16, 9, 4, 11), nrow=2)
+rownames(owls) = c("present", "absent")
+colnames(owls) = c("old", "young")
+chisq.test(owls)
+
+# Fisher’s Exact test
+
+fisher.test(owls)
+
+# Bird habitat data
+birds   = read.csv(here("data", "bird.sta.csv"))
+hab     = read.csv(here("data", "hab.sta.csv"))
+birdhab = merge(birds, hab, by=c("basin", "sub", "sta"))
+
+# Create a contingency table for edge/interior and brown creeper presence/absence
+table(birdhab$s.edge, birdhab$BRCR > 0)
+
+# set the presence to be in the first column
+br_creeper_table = table(birdhab$s.edge, birdhab$BRCR > 0)[, 2:1]
+
+rownames(br_creeper_table) = c("Edge", "Interior")
+colnames(br_creeper_table) = c("Present", "absent")
+
+br_creeper_table
+chisq.test(br_creeper_table)
+
+
+```
+
+# Questions {.tabset .tabset-pills}
+
+## Chi-square test
+
+```{r, echo=FALSE, include=FALSE}
+
+# Review the walkthrough materials on testing proportions and contingency tables.
+#Conduct a Chi-square test on the contingency table of Brown Creeper presence/absence in edge #and interior habitats.
+
+# Create a contingency table for edge/interior and brown creeper presence/absence
+table(birdhab$s.edge, birdhab$BRCR > 0)
+
+# set the presence to be in the first column
+br_creeper_table = table(birdhab$s.edge, birdhab$BRCR > 0)[, 2:1]
+
+rownames(br_creeper_table) = c("Edge", "Interior")
+colnames(br_creeper_table) = c("Present", "absent")
+
+br_creeper_table
+chisq.test(br_creeper_table)
+
+```
+
+
+- **Q1 (1 pt.): State the null hypothesis of the Chi-square test.**
+
+- Make sure you state the null hypothesis in terms of Brown Creeper presence/absence and edge/interior habitats.
+
+*Answer: The proportion of presence/absence of Brown Creepers in Edge and Interior habitats are equal*
+
+- **Q2 (2 pts.): Consider the results of your test and explain whether you think that Brown Creepers show a significant habitat preference.**
+
+- Make sure your use the output of your statistical test to support your answer.
+
+*Answer: Accord to the Chi-square test (X-squared = 23.3, p < 0.01), Brown creepers are significant more frequently in Interior that in Edge habitat*
+
+## Building model for ANOVA 
+
+- **Q3 (1 pt.): Show the R-code you can use to create a model fit (call it fit_species) of penguin body mass as predicted by penguin species.**
+
+*Answer: *
+
+```{r}
+library(palmerpenguins)
+
+fit_species <- lm(body_mass_g ~ species, data= penguins)
+```
+
+
+- **Q4 (1 pt.): Show the R-code you can use to create a model fit (call it fit_sex) of penguin body mass as predicted by sex.**
+
+*Answer: *
+
+```{r}
+fit_sex <- lm(body_mass_g ~ sex, data= penguins)
+```
+
+
+- **Q5 (1 pt.): Show the R-code you can use to create a model fit (call it fit_both) of penguin body mass as predicted by species and sex. This should be an interactive model, i.e. it should include a sex:species interaction.** 
+
+*Answer: *
+
+```{r}
+fit_both <- lm(body_mass_g ~ sex:species, data= penguins)
+```
+
+
+## Homogeneity Assumption: Graphical 
+
+We know that the Group 1 methods require homogeneity (constant variance). Conditional boxplots can be a great way to visually check for homogeneity!
+
+If the homogeneity assumption holds, we would expect that all of the groups would have similar variability - the boxes should all be about the same width.
+
+As you know, the `boxplot()` function will accept a `formula` and `data` arguments, just like you used to build you fits.
+
+Create conditional boxplots corresponding to each of your model fits.
+
+Hint: the first draft of my doubly conditional boxplot of species and sex looked like this:
+
+- **Q6 (1 pt.): Include a conditional boxplot corresponding to your fit_species model.**
+
+*Answer: *
+
+```{r, fig.align='center'}
+
+boxplot(body_mass_g ~ species, data= penguins, main= "Diffences of\n Body Mass(g) by species",
+        ylab = "Body mass (g)", xlab = "Species")
+```
+
+
+- **Q7 (1 pt.): Include a conditional boxplot corresponding to your fit_sex model.**
+
+*Answer: *
+
+```{r, fig.align='center'}
+
+boxplot(body_mass_g ~ sex, data= penguins, main= "Diffences of\n Body Mass(g) by sex",
+        ylab = "Body mass (g)", xlab = "Sex")
+```
+
+- **Q8 (3 pts.): Include a conditional boxplot corresponding to your fit_both model.**
+
+- Your group labels must all correspond to the correct box, be visible, and sensible.
+
+*Answer: *
+
+```{r, fig.align='center', fig.width= 9, fig.height=4}
+
+boxplot(body_mass_g ~ species + sex, data= penguins, main= "Diffences of\n Body Mass(g) by species and sex",
+        ylab = "Body mass (g)", xlab = "")
+```
+
+- **Q9 (3 pts.): Based on the shapes of the boxes, which of the models (if any) do you think may have problems fulfilling the homogeneity assumption?**
+
+*Answer: the model `fit_species` looks that may have problems with the homegeinity assumption, because the Gentoo penguins present more variance that, Adelie, and Chinstrap present less variance*
+
+## Homogeneity Assumption: Bartlett test 1
+
+Review the walkthrough to review how to test for homogeneity of variances. The Bartlett test can
+
+In the lecture assignments, we’ll be conducting Analyses of Variances on the penguin data. In these lab questions we’ll practice checking some of the ANOVA assumptions.
+
+We should verify that the the variances are homogeneous in the groups we specified in our ANOVAs.
+
+Use `bartlett.test()` to check for homogeneity of the variances in each of your model fits.
+
+```{r, echo=FALSE, include=FALSE}
+
+bartlett.test(body_mass_g ~ species, data=penguins)
+bartlett.test(body_mass_g ~ sex, data=penguins)
+
+
+```
+
+
+- **Q10 (1 pt.): State the null hypothesis of the Bartlett test.**
+
+*Answer: The variance of body mass among each group (species or sex) is equal*
+
+- **Q11 (1 pt.): What was the p-value from the Bartlett test of homogeneity for observations grouped by species?**
+
+*Answer: p-value = 0.0501*
+
+- **Q12 (1 pt.): What was the p-value from the Bartlett test of homogeneity for observations grouped by sex?**
+
+*Answer: p-value = 0.0319*
+
+
+## Homogeneity Assumption: Bartlett test 2
+
+Unfortunately, `bartlett.test()` doesn’t work with the formula syntax you used to make your two-way model or your doubly-conditional boxplot.
+
+You’ll need to use your friend `aggregate()` to separate the observations by the two factors sex and species.
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+
+dat_groups = aggregate(
+  body_mass_g ~ species + sex,
+  data = penguins,
+  FUN = c )
+
+str(dat_groups)
+
+bartlett.test(dat_groups$body_mass_g)
+
+```
+
+
+- **Q13 (1 pt.): What was the p-value from the Bartlett test of homogeneity for observations grouped by both factors**
+
+*Answer: p-value = 0.1741*
+
+- **Q14 (3 pts.): Based on the results of the Bartlett tests, do you anticipate any issues with heterogeneity in any of the models? Make sure you justify your response with the results of your tests.**
+
+*Answers: We may have issues with the model fit_sex, the homogeneity looks is no equal between groups (p-value = 0.0319)*
+
+
+## Florida trees 
+
+In 2015, street trees in three neighborhoods in Tampa, FL were surveyed for defects and assessed for probability of failure (Nelson et al., 2022).
+
+The failure probability assessment considers individual tree characteristics such as DBH, crown width, and defects (such as decay, root problems, or leaning trunks). The tree assessment method classifies trees into four ascending classes of failure probability with 1 indicating low probability and 4 extreme probability of failure.
+
+In 2017, Hurricane Irma made landfall in Florida causing extensive destruction. Following the hurricane, the trees were revisited to assess storm damage.
+
+You’ll use a modified version of this survey dataset to practice some of the techniques form the lab walkthrough.
+
+Retrieve the trees_FL.csv file and read it into a data.frame object called dat_fl.
+
+```{r}
+dat_fl <- read.csv(here("data", "trees_FL.csv"))
+```
+
+- **Q15 (5 pts.): Perform a graphical exploration of the dataset. Create the following plots and include them in your report. You may create separate figures, or combine them into one multi-panel figure.**
+
+    -A barplot of counts of trees in each probability of failure class (column ProbabilityofFailure.
+    -A barplot of the counts of trees in each of the failure classes (column Failure_Standardized)
+    -A histogram of DBH
+    -A scatterplot of DBH (x-axis) and tree height (y axis)
+
+```{r, fig.align='center'}
+par(mfrow = c(2,2))
+
+barplot(table(dat_fl$ProbabilityofFailure), beside = TRUE)
+
+barplot(table(dat_fl$Failure_Standardized), beside = TRUE)
+
+hist(dat_fl$DBH_in)
+
+plot(dat_fl$DBH_in, dat_fl$HeighttoTop_ft)
+```
+
+
+## Florida trees: Compare Distribution 
+
+Three types of failure were recorded in the survey. A question of interest is whether there are differences in the characteristics of trees with each type of failure.
+
+For example, we can compare the distributions of DBH within each failure category.
+
+The distribution of DBH for the trees with branch failure is clearly different than the distributions for whole-tree failures and intact trees. The ‘none’ and ‘whole tree’ classes may be more similar.
+
+Conduct a Kolmogorov-Smirnov test on the distributions of DBH for intact trees and the trees with whole-tree failures.
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+whole <- subset(dat_fl, Failure_Standardized == "whole")
+
+intact <- subset(dat_fl, Failure_Standardized == "none")
+
+ks.test(whole$DBH_in, intact$DBH_in)
+```
+
+- **Q16 (1 pt.): State the null hypothesis for the Kolmogorov-Smirnov test. Your answer should be in terms of the DBH of the two groups of trees.**
+
+*Answer: The distribution for BDH of whole and intact trees failures are the same*
+
+
+- **Q17 (1 pt.): What was the p-value of the test? Based on the evidence, do you think the distribution of DBH is the same for the two groups?**
+
+*Answer: p value is 0.02125, there are statistic significant evidence to reject the null hypothesis, so the distribution of DBH for whole and intact trees failures are different*
+
+## Florida trees Correlations
+
+Take a look at your DBH/tree height scatterplot. Do you see a relationship between the two variables?
+
+Let’s do a formal test to test to support our graphical intuition.
+
+- **Q18 (1 pt.): Qualitatively describe the shape of the relationship between DBH and height. Is it linear? Curved? Monotonic?**
+
+*Answer: The relationship between DBH and height look that is curve, the tree height increase with increase of DBH, but there are a limit when the high stop to increase with the increase of DBH *
+
+- **Q19 (1 pt.): Given your answer to the previous question, which type of correlation coefficient is most appropriate?**
+
+*Answer: Spearman correlation coefficient *
+
+- **Q20 (1 pt.): What is the p-value? Do you conclude that the two variables are significantly correlated?**
+
+*Answer: p value < 0.01, rho = 0.885. The DBH and Height of threes are positive and significative correlate at 88.5 %*
+
+```{r}
+cor.test(dat_fl$DBH_in, dat_fl$HeighttoTop_ft, method= "spearman" )
+```
+
+
+## Florida tress: Risk Rating
+
+One of the goals of a study on the trees was to determine whether the probability of failure ratings were effective. In other words, were trees with a higher probability of failure rating more likely to experience a failure?
+
+We can use a Chi-square test on a contingency table of failure types and failure probability ratings:
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+table(dat_fl$Failure_Standardized, dat_fl$ProbabilityofFailure)
+
+dat_fl$fail = factor(dat_fl$Failure_Standardized != "none")
+
+levels(dat_fl$fail) = c("No Fail", "Fail")
+
+fl_table_2 = table(
+  dat_fl$ProbabilityofFailure,
+  dat_fl$fail)
+fl_table_2
+
+chisq.test(fl_table_2)
+
+chiTest <- chisq.test(fl_table_2)
+chiTest$residuals
+```
+
+
+- **Q21 (2 pts.): What was the value of the test statistic (X-squared)? What was the corresponding p-value?**
+
+*Answer: X-Squared = 202.65, p value < 0.01*
+
+- **Q22 (1 pt.): What is the value of the chi-square residual (rounded to the nearest whole number) for the count of failures in probability category 1?**
+
+*Answer: -8 *
+
+```{r}
+chiTest <- chisq.test(fl_table_2)
+chiTest$residuals
+```
+
+
+- **Q23 (1 pt.): Were there more, or fewer, tree failures than expected by chance in failure probability category #1?**
+
+*Answer: the tree failures observed was fewer (168) than the expected (304)*
+
+```{r}
+chiTest$observed
+chiTest$expected
+```
+
+
+- **Q24 (1 pt.): Were there more, or fewer, tree failures than expected by chance in failure probability category #4?**
+
+*Answer: the tree failures observed was more (63) than the expected (25)*
+
+- **Q25 (2 pts.): Given your answers to the previous two questions, do you conclude that the probability of failure rating system is effective?**
+
+*Answer: Yes, I think the system is effective*

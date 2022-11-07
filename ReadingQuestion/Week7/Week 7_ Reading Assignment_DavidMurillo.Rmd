@@ -1,0 +1,63 @@
+---
+title: "Reading Question Week 7"
+author: "David Murillo"
+date: "October 20, 2022"
+output:
+  html_document:
+    theme: cosmo
+  html_notebook: default
+---
+
+# I worked with Hoa Ninh and Theint Thandar Bol 
+
+## Question
+
+#### **Q1 (1 pt.): Explain the effect, if any, of the population mean on the width of CIs for a population that is normally-distributed. If population mean does not affect the widths of CIs explain why not.**
+
+*Answer: The population mean does not affect the widths of Confidence Intervals (Cls) because the confidence intervals are affected by the distribution of numbers around the mean. *
+
+#### **Q2 (1 pt.): Explain the effect, if any, of the population standard deviation on the width of CIs. If population standard deviation does not affect the widths of CIs explain why not.**
+
+*Answer: The standard deviations affects the width of CIs because the CIs are calculated using the standard deviation. The width of the confidence interval increases as the standard deviation increases. *
+
+#### **Q3 (1 pt.): Explain the effect, if any, of the population size on the width of CIs. If population size does not affect the widths of CIs explain why not.**
+
+*Answer: The population size does not affect the CIs because the CIs are estimated in base a sample from population, and the CIs help us to estimate the population size. *
+
+#### **Q4 (1 pt.): Explain the effect, if any, of the sample size on the width of CIs. If sample size does not affect the widths of CIs explain why not.**
+
+*Answer: The sample size affects the CIs because CIs depends on Standard Error (SSE), which is identified by Standard Deviation divided by the square root of sample size (n). In short, the width of CIs get narrower once sample size get larger. *
+
+#### **Q5 (4 pts.): Interpreting a CI. Use a narrative example of a real (or made up) dataset to describe what a Frequentist 95% confidence interval really means.**
+
+  - Make sure you cover any relevant assumptions of the Frequentist paradigm.
+ 
+  - You answer must be in non-technical language.
+
+  - Imagine you were explaining confidence intervals to an audience of teenagers, or perhaps a family member who doesn’t have training in statistics.
+  
+*Answer: Suppose that we carried out a survey of birds in coffee plantations, and forest system. We have 50 sample size for system, we estimate the richness of birds for both system and we get that in coffee plantation system the mean of the richness was 9, and in forest was 7, we also estimate the standard deviation that was 3.4 for coffee plantation system and 1.5 for forest system. With this values we estimate the CIs for coffee and forest, we assume that our data has a normal distribution, and we will use a alpha value of 0.05.*
+
+*Our results indicate that the richness in coffee plantation system are between 8 an 10. And the richness in forest is between 6 and 7. This result indicates that if we repeat our experiment we will have a probability of 95% that the result of birds richness in coffee plantations was between 8 and 10, and the we have a probability of 95% that the result of birds richness in forest system was between 6 and 7.*
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+n <- 50
+
+sdC <- 3.4
+sdF <- 1.5
+
+
+ICC <- 1.96 * sdC/sqrt(50)
+
+ICF <- 1.96 * sdF/sqrt(50)
+
+ICC
+ICF
+
+9 - ICC
+9 + ICC
+
+7 - ICF
+7 + ICF
+```
+

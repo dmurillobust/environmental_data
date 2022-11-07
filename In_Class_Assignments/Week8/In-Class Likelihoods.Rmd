@@ -1,0 +1,237 @@
+---
+title: "In-Class Likelihoods"
+author: "David Murillo"
+date: "October 25, 2022"
+output:
+  html_document:
+    theme: cosmo
+  html_notebook: default
+---
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+#Here’s an example in R:
+
+#Let’s say I’ve been conducting counts of Wilson’s Warblers at study sites in Oregon.
+#I’ve been to 2 sites where I counted 2, and 6 birds.
+
+x_observed = c(2, 6)
+print(x_observed)
+
+dpois(x = 2, lambda = 4.5)
+
+dpois(x = 6, lambda = 4.5)
+
+dpois(x = 2, lambda = 4.5) * dpois(x = 6, lambda = 4.5)
+
+wiwa_counts = c(2, 6)
+dpois(x = wiwa_counts, lambda = 4.5)
+
+prod(dpois(x = wiwa_counts, lambda = 4.5)) # Product of Likelihoods
+
+sum(log(dpois(x = wiwa_counts, lambda = 4.5))) # Sum of Log-Likelihoods
+
+
+# Likelihood of Many Observations
+library(here)
+
+dat_bird = read.csv(here::here("data", "bird.sta.csv"))
+dat_habitat = read.csv(here::here("data", "hab.sta.csv"))
+dat_all = merge(dat_bird, dat_habitat)
+
+
+```
+
+
+# Questions
+
+Consider the likelihood calculation example for 2 observations of Wilson’s Warblers using a Poisson distribution model.
+
+- Recall the R-code I used in the walkthrough to find the log-likelihood of using λ=4.5:
+
+As a group, experiment with different values of λ to find a value that maximizes the sum of log-likelihoods of the hypothetical observations.
+
+wiwa_counts = c(2, 6)
+dpois(x = wiwa_counts, lambda = 5)
+
+sum(log(dpois(x = wiwa_counts, lambda = 4)))
+
+## **Q1 (1 pt.): What value for λ did you select?**
+
+*Answer: 4 *
+
+## **Q2 (1 pt.): How did you choose a value?**
+
+*Answwer: Because is the mean of 2 and 6*
+
+
+In the walkthrough, I tried using a Poisson distribution with λ=1.0 to model the set of census counts of Wilson’s Warbler.
+
+You will create models for the census count of Winter Wrens.
+
+- Find the λ value of a Poisson model that makes all of the observed the Winter Wren’s census counts most likely.
+
+```{r}
+mean(dat_bird$WIWR)
+```
+
+
+- Plot a histogram of Winter Wren counts (Check the metadata file to find the abbreviation for Winter Wrens). Make sure you choose an appropriate number of bins for the plot.
+
+```{r}
+hist(dat_all$WIWR, breaks = 0:7 - .5, 
+     main = "Histogram of abundance \n Winter Wrens",
+     xlab = "Abundance")
+```
+
+
+- As a group, you’ll be searching for the value of λ that maximizes the sum of log-likelihood. In other words, you’ll find the the model parameter that makes the values of observed wren census counts most likely.
+
+```{r}
+sum(log(dpois(x = dat_all$WIWA, lambda = 1.45)))
+```
+
+- Hint: you only need to consider 2 significant figures in your value of λ.
+
+## **Q3 (1 pt.): Include your histogram into your report.**
+
+```{r}
+png(filename = "WIWR_Histogram.png", width = 6, height = 4, res = 300, units = "cm")
+
+hist(dat_all$WIWR, breaks = 0:7 - .5, 
+     main = "Histogram of abundance \n Winter Wrens",
+     xlab = "Abundance")
+
+dev.off()
+
+```
+
+
+**Q4 (1 pt.): What value for λ did you select?**
+
+*Answer:  1.45 *
+
+**Q5 (2 pts.): Show the R code you used to calculate the Poisson log-likelihood for the vector of Winter Wren census counts.**
+
+*Answer: sum(log(dpois(x = dat_all$WIWA, lambda = 1.45))) *
+
+
+In the walkthrough, I tried using a Poisson distribution with λ=1.0 to model the set of census counts of Wilson’s Warblers.
+
+You will create models for the census count of Winter Wrens.
+
+
+Suppose you wanted to use a binomial distribution instead of a Poisson distribution.
+
+Find values of the parameters for a binomial distribution that make the vector of census counts most likely.
+
+```{r}
+sum(log(dbinom(x = dat_all$WIWA, size = 6, prob = 0.024)))
+
+
+```
+
+**Q6 (1 pt.): What are the two parameters for a binomial distribution and what do they represent?**
+
+*Answer: The sample size and the probability*
+
+**Q7 (2 pts.): What were the parameter values you selected?**
+
+*Answer: n = , p= 0.24*
+
+**Q8 (1 pt.): How did you choose a value for n?**
+
+*Answer: *
+
+**Q9 (2 pts.): Show R code you used to calculate the binomial log-likelihood for the vector of Winter Wren census counts.**
+
+*Answer: *
+```{r}
+sum(log(dbinom(x = dat_all$WIWA, size = max(dat_bird$WIWR), prob = 0.24)))
+```
+
+**Q10 (1 pt.): Considering a Maximum Likelihood criterion, which model better fit the data?**
+
+
+
+**Q11 (2 pts.): Considering what you know about the Binomial and Poisson distributions, which model is more appropriate for census count data?**
+
+
+```{r}
+set.seed(1)
+vec_rnorm = rnorm(n = 10, mean = 0, sd = 1)
+vec_rnorm
+
+
+log(dnorm(vec_rnorm, 0, 1))
+```
+
+
+**Q12 (1 pt.): Create the vector (make sure you set seed to 1) and calculate the log likelihood that it came from a standard normal distribution.**
+
+*Answer: log likelihood for every value of the vector are: -1.1151607, -0.9358010, -1.2680761, -2.1913990, -0.9732262, -1.2555227, -1.0377321, -1.1915002, -1.0847006, -0.9655696*
+
+```{r}
+set.seed(1)
+vec_rnorm = rnorm(n = 10, mean = 0, sd = 1)
+vec_rnorm
+
+
+log(dnorm(vec_rnorm, 0, 1))
+
+sum(log(dnorm(vec_rnorm, 0, 1)))
+```
+
+
+**Q13 (2 pts.): Show the R code you used to make the calculation**
+
+```{r}
+set.seed(1)
+vec_rnorm = rnorm(n = 10, mean = 0, sd = 1)
+vec_rnorm
+
+
+log(dnorm(vec_rnorm, 0, 1))
+
+sum(log(dnorm(vec_rnorm, 0, 1)))
+```
+
+
+**Q14 (2 pts.): Use the guess and check method to find the maximum likelihood optimal values for mean and standard deviation (to 2 significant figures) of the numbers in the vector.**
+
+```{r}
+set.seed(1)
+vec_rnorm = rnorm(n = 10, mean = 0, sd = 1)
+
+sum(log(dnorm(vec_rnorm, 0.1, 1)))
+
+```
+
+Load the Palmer penguins dataset.
+
+Assume the data for flipper length are normally-distributed (they are not).
+
+Determine maximum likelihood estimates for mean and standard deviation of a normal distribution that best describes the flipper lengths.
+
+```{r}
+library(palmerpenguins)
+data("penguins")
+
+mean(penguins$flipper_length_mm, na.rm = TRUE)
+sd(penguins$flipper_length_mm, na.rm = TRUE)
+
+sum(log(dnorm(!is.na(penguins$flipper_length_mm), mean = 200, sd= 14.06)))
+```
+
+
+**Q15 (1 pt.): How did you choose your starting guess values for mean and standard deviation?**
+
+
+
+**Q16 (2 pts.): Using the guess and check method, what were the maximum likelihood estimates of mean and standard deviation (to 1 significant figure).**
+
+```{r}
+sum(log(dnorm(!is.na(penguins$flipper_length_mm), mean = 1, sd= 1)))
+```
+
+
+

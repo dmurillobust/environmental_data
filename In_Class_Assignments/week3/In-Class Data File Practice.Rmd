@@ -1,0 +1,56 @@
+---
+title: "In-Class Data File Practice"
+output: html_notebook
+author: "David Murillo"
+date: "September/22/2022"
+---
+
+#Load packages
+```{r}
+require(here)
+```
+
+
+Use here() and read.csv() to read the three files into data.frame objects called:
+```{r}
+dat_catrate <- read.csv(here("data", "catrate.csv"))
+dat_delomys <-  read.csv(here("data", "delomys.csv"))
+dat_rope <-  read.csv(here("data", "rope.csv"))
+```
+
+Use head() to view the first few lines of each data frame.
+
+```{r}
+head(dat_catrate)
+head(dat_delomys)
+head(dat_rope)
+```
+
+You can plot histograms for any data column with numeric data. For data sets with 2 or more numeric columns you can create scatterplots.
+
+```{r}
+hist(dat_catrate$cat.rate)
+plot(dat_delomys$body_mass, dat_delomys$body_length)
+
+png(filename = "DavidMurillop2.png", units = "cm", height = 10, width = 14,
+    res = 450)
+
+plot(dat_rope$p.cut, dat_rope$p.strength,
+     main = "David Murillo, Relation between cut and strength",
+     xlab = "Cut", ylab = "Strength")
+
+dev.off()
+
+```
+
+
+
+```{r}
+coplot(p.cut ~ p.strength | rope.type, data= dat_rope)
+
+```
+
+
+
+
+

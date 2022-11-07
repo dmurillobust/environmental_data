@@ -1,0 +1,164 @@
+---
+title: "Week 5 Question"
+author: "David Murillo"
+date: "Octuber 16, 2022"
+output:
+  html_document:
+    theme: cosmo
+
+---
+
+### **I worked alone**
+
+# Questions {.tabset .tabset-pills}
+
+## Warm-Up Question: Q1 - Q7
+
+- **Q1 (2 pts.): Choose the best words or phrases to fill in the blanks: A probability distribution is a map from the (a)_____ to the (b)_____.**
+ 
+ *Answer: A probability distributions is a map from `events` to the `likelihoods`*
+
+- **Q2 (2 pts.): How many possible outcomes are there (i.e. what is the sample space) if you flip two coins sequentially: a penny and a quarter? Assume that**
+
+  - the two coins each have a head and a tail
+
+  - you care about order, but you may flip either coin first.
+
+  - the probability of heads or tails is about 0.5 for each coin.
+  
+ *Answer: There are `8` possible outcomes*
+ 
+          - head (a penny) with head (a quarter)
+          - head (a penny) with tail (a quater)
+          - tail (a penny) with head (a quater)
+          - tail (a penny) with tail (a quater)
+          - head (a quater) with head (a penny)
+          - head (a quater) with tail (a penny)
+          - tail (a quater) with head (a penny)
+          - tail (a quater) with tail (a penny)
+
+- **Q3 (2 pts.): How many possible outcomes are there (i.e. what is the sample space) if you flip two quarters at the same time? Assume that**
+
+  - the two coins are indistinguishable
+    - i.e. you just want to know the number of heads or tails for each possible outcome.
+
+  - each have a head and a tail
+
+  - the probability of heads or tails is about 0.5 for each quarter.
+  
+ *Answer: There are `4` possible aoutcome*
+   
+         - head with head
+         - head with tail
+         - tail with head
+         - tail with tail
+
+- **Q4 (2 pts.): How many outcomes are there if you flip a penny three times? If you care about the order of flips, how many possible events are there in the sample space?**
+
+ *Answer: There are `8` possible outcomes*
+         
+         - head, head, head
+         - head, head, tail
+         - head, tail, head
+         - head, tail, tail
+         - tail, tail, tail
+         -tail, tail, head
+         -tail, head, tail
+         -tail, head, head
+
+- **Q5 (1 pt.): Are these combinations, or permutations?**
+
+ *Answer: Are permutations *
+
+- **Q6 (2 pts.): Now suppose you don’t care about the order, and you simply want to know about the number of heads when you flip the penny three times. How many possible events are in the sample space?**
+
+ *Answer: There are `4` possible events*
+          
+          -3 tails
+          -3 heads
+          -2 heads 1 tail
+          -2 tails 1 head
+
+- **Q7 (1 pt.): Are these combinations, or permutations?**
+
+ *Answer: Are combinations*
+
+## Simultaneous Acorns 1: Q8 - Q10
+
+- **Q8 (2 pts.): What is the size of the sample space?**
+
+ *Answer: The sample size is `6` possible outcomes*
+          
+          - 2 Quercus macrocarpa
+          - 2 Q. rubra
+          - 2 Q. alba
+          - 1 Q. macrocarpa 1 Q. rubra
+          - 1 Quercus 1 Q. alba
+          - 1 Q. rubra 1 Q. alba
+
+- **Q9 (2 pts.): Given the scenario description, how many ways are to there to collect two acorns of the same species?**
+
+ *Answer: 3 ways*
+          
+          - 2 Quercus macrocarpa
+          - 2 Q. rubra
+          - 2 Q. alba
+
+- **Q10 (2 pts.): Given the scenario description, how many ways can you collect two acorns of different species?**
+
+ *Answer: 3 ways*
+         
+         - 1 Q. macrocarpa 1 Q. rubra
+         - 1 Quercus 1 Q. alba
+         - 1 Q. rubra 1 Q. alba
+
+## Sequencial Acorns Q11 - Q16
+
+- **Q11 (1 pt.): What is the probability that the acorn in your left pocket is Q. alba?**
+
+ *Answer: The probability is 0.33*
+
+- **Q12 (1 pt.): What is the probability that the acorn in your right pocket is Q. macrocarpa?**
+
+ *Answer: The probability is 0.33*
+
+- **Q13 (2 pts.): If you already know that the acorn in your left pocket is Q. alba, what is the probability that the acorn in your right pocket is also Q. alba?**
+
+ *Answer: The probability is 0.11*
+
+- **Q14 (2 pts.): What is the probability that both acorns are Q rubra?**
+
+ *Answer: The probability is 0.11*
+
+- **Q15 (2 pts.): What is the probability that you collected exactly one each of Q. alba and Q. rubra?**
+
+ *Answer: The probability is 0.11*
+
+- **Q16 (2 pts.): What is the probability that the acorn in your left pocket is Q. alba and you have an acorn of Q. rubra in your right pocket?**
+
+ *Answer: The probability is 0.11*
+
+## Binomial and Poisson: Q17 - Q20
+
+For the questions below consider two discrete probability distributions, parameterized as:
+
+- a Poisson distribution with λ=6
+- a Binomial distribution with n=10 and p=0.6.
+
+- **Q17 (1 pt.): Which of the following is the size of the sample space of this Poisson distribution?**
+
+ *Answer: 11*
+ 
+- **Q18 (2 pts.): Which of the following is the size of the sample space of this Binomial distribution?**
+
+ *Answer: 10*
+
+- **Q19 (2 pts.): Describe a characteristic that is common to both the Binomial and Poisson distributions that makes them good models for counts.**
+
+ *Answer: Both are using with positive discrete numeric variables, as number of birds (abundance), number of students, ext that are counts *
+
+- **Q20 (2 pts.): Hypothesize a scenario in which a Binomial distribution may be a better count model than a Poisson distribution.**
+
+ *Answer: When the most of samples have values of 0 or 1, and only few values are higher that 1. In this occasion the binomial distribution could be better to explain the counts of the species in study*
+
+ *Hypothesize scenario:  We are study a rare specie, `Setophaga chrysoparia`. We made count points in Honduras pine-forest, we carried 100 point counts, our result are that in 80 points we count `0` individuals, and 18 points we count "1" individual, and 1 point we count `2` individuals, and in 1 point we count `3` individuals. In this occasion could be better use a binomial distribution, and change the values of 2 and 3 into a 1, to explain presence/ausense of `Setophaga chrysoparia` *

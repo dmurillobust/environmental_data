@@ -1,0 +1,42 @@
+---
+title: "Reading Question Week 9"
+author: "David Murillo"
+date: "November 4, 2022"
+output:
+  html_document:
+    theme: cosmo
+  html_notebook: default
+---
+
+# I worked with Hoa Ninh and Theint Thandar Bol 
+
+## Questions
+
+### **Q1 (1 pt.): Briefly (1 - 2 short paragraphs) describe at least two tradeoffs between the customized ML methods and the canned methods.**
+
+*Answer: The canned methods (Least Squares) could be use by convention, when we use a standard method, we could just say that model that we use (linear regression for example), and no-one will think twice to understand it. If we use no-standard method, we will need to explain the method carefully and overcome readers with much information about statistics, even if our model is actually simpler and more appropriate than any standard model. Use standard method may minimize confusion.*
+
+*Use canned methods let us varying and comparing hypotheses, for example into R software and others tools makes it easy to compare a variety of models, we could differenst models to explain our reponse variables quickly. Instein no-standar method could be little more complicate made and comparate different models and hypotheses.*
+
+### **Q2 (1 pt.): Briefly (1 - 2 sentences) describe each of the four key assumptions of the general linear modeling approach.**
+
+*Answer: The assumptions of the general linear model are:*
+
+*1) The residuals are Normality distributed: The residuals is the different between the observed values and predicted values, this different is a measurement of "error" of the model, and this different have to be normally distributed*
+
+*2) All observations are independent: One observation has not be effect by other observation*
+
+*2) Homoscedastic: the observations have constant variance.* 
+
+*3) Any continuous predictor variables (covariates) are measured without error.*
+
+
+### **Q3 (1 pt.): Explain how the normality assumption can be met in a general linear model, even if the response variable is not normally-distributed. (1 - 2 paragraphs)**
+
+*Answer: The residuals are the different bewteen the observed value and predicted value by the linear general model. To estimate predicted values we need a predictor varible (independent variable), and to estimated the residuals we need to know the different between predicted and observed values. Because to estimate residuals we need two variables (the response and predicted variable) and are different bewteen predicted and observed values, the residuals could be normally distributed, even if the response variable does not present normallity distribution*
+
+
+
+
+
+
