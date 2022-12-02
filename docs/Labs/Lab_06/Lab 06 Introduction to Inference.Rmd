@@ -1,0 +1,316 @@
+---
+title: 'Lab 06: Introduction to Inference'
+author: "David Murillo"
+date: "Octuber 12, 2022"
+output:
+  html_document:
+    theme: cosmo
+---
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+#R Function for the SE
+
+sse_mean = function(x){
+  sd(x, na.rm = TRUE )/sqrt( length(x))
+}
+
+require(palmerpenguins)
+
+sse_mean(penguins$bill_depth_mm)
+
+```
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# 2-species data
+
+dat_pen = subset(penguins, species != "Gentoo")
+
+boxplot(
+  flipper_length_mm ~ species, data = dat_pen,
+  ylab = "Flipper length (mm)")
+
+#droplevels()
+
+dat_pen = droplevels(subset(penguins, species != "Gentoo"))
+
+par(mfrow = c(1, 2))
+  boxplot(
+    flipper_length_mm ~ species, data = penguins,
+    ylab = "Flipper length (mm)")
+
+```
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# Resampling with replacement
+#What if we randomly shuffled the flipper length data and made another boxplot?
+
+# for reproducibility
+set.seed(123)
+
+flipper_shuffled = sample(
+  penguins$flipper_length_mm, replace = TRUE)
+
+{
+  par(mfrow = c(1, 2))
+  boxplot(
+    flipper_length_mm ~ species, data = penguins,
+    ylab = "Flipper length (mm)",
+    main = "Original Data")
+  boxplot(
+    flipper_shuffled ~ penguins$species,
+    ylab = "Flipper length (mm)",
+    main = "MonteCarlo Resampled Data",
+    xlab = "species")
+}
+```
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# Bootstrap Resampling and Alternative Hypotheses
+
+penguins2 = penguins[sample(1:nrow(penguins), replace = T), ]
+
+{
+  par(mfrow = c(1, 2))
+  boxplot(
+    flipper_length_mm ~ species, data = penguins,
+    ylab = "Flipper length (mm)",
+    main = "Original Data")
+  boxplot(
+    flipper_length_mm ~ species, data = penguins2,
+    ylab = "Flipper length (mm)",
+    main = "Bootstrap Data")
+}
+```
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# Classical t-test: Adelie and Chinstrap penguins
+
+t.test(dat_pen$flipper_length_mm ~ dat_pen$species)
+
+# Two-sample resampling
+
+# Reset the random number generator state for reproduceablility
+set.seed(1)
+flipper_shuffled = sample(dat_pen$flipper_length_mm)
+
+boxplot(flipper_shuffled ~ dat_pen$species)
+```
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# Using aggregate()
+
+agg_means = aggregate(
+  flipper_length_mm ~ species, 
+  data = dat_pen, 
+  FUN = "mean", 
+  na.rm = TRUE)
+
+diff_observed = diff(agg_means[, 2])
+
+agg_means
+diff_observed
+
+```
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# Resampling experiment
+
+# If I ran this function many times, how often would I see a mean difference greater than diff_observed?
+
+```
+# Question {.tabset .tabset-pills}
+
+## Sample Standard Error function 
+
+- **Q1 (3 pts.): Show the R code you used to define your sse_mean() function. Include the following line before your function definition:**
+
+*Answer:*
+
+```{r}
+rm(list = ls())
+
+sse_mean = function(x){
+  sd(x, na.rm = TRUE )/sqrt( length(x))
+}
+
+sse_mean(penguins$body_mass_g)
+sse_mean(mtcars$mpg)
+```
+
+## Two Group Resampling 
+
+- **Q2 (4 pts.): Show the code you used to define your `two_group_resample_diff()` function.**
+
+*Answer:*
+
+```{r}
+
+two_group_resample_diff = function(x, n_1, n_2) {
+  
+  group1 = mean(sample(x, n_1, replace = TRUE), na.rm = TRUE )
+  
+  group2 = mean(sample(x, n_2, replace = TRUE), na.rm = TRUE)
+  
+  return(group1 - group2)
+}
+
+```
+
+- **Q3 (2 pts.): Does your function perform Monte Carlo or bootstrap resampling, i.e. does it simulate a null or an alternative hypothesis? You may want to review your answer after you complete the rest of the lab questions.**
+
+*Answer: Perform Monte Carlo resampling, because we get different vaues every time, this simulate a null hypothesis*
+
+## Resampled Flipper Lengths 
+
+Use your `two_group_resample_diff()` function along with a loop to generate 2000 resampled differences of means for flipper length between the two penguin species (Adelie and Chinstrap).
+
+- **Q4 (1 pt.): Create a histogram of the resampled differences of means.**
+
+*Answer:*
+
+```{r, echo= FALSE, warning=FALSE, fig.align='center', fig.width= 6, fig.height=4}
+
+dat_pen <-   penguins
+
+n = 2000
+
+mean_differences = c()
+
+dat_pen <- droplevels(subset(dat_pen, species %in% c( "Adelie", "Chinstrap")))
+
+for (i in 1:n)
+{
+  mean_differences = c(
+    mean_differences,
+    two_group_resample_diff(dat_pen$flipper_length_mm, 68, 152)
+  )
+}
+
+hist(mean_differences, main= "Histogram of mean differences",
+     xlab = "mean differences")
+```
+
+- **Q5 (2 pts.): How many of your resampled differences of means had a magnitude greater than 5.8?**
+
+*Answer: 0 *
+
+```{r}
+sum(mean_differences > 5.8)
+```
+
+## Resampling and p-values
+
+- **Q6 (2 pts.): Given a p value of less than 1 per 10 million, how many simulations do you think you would have to do to see a difference in mean flipper length equal to or greater than 5.8 mm?**
+
+*Answer: at least 10 million, this because we have a p value of 0.00000006, this mean that if we repeat the analysis with different set of data on 99.9999999% of the time we will see a different less that 5.8 mm, if we want to see a different greater than 5.8 mm we need to redo the analysis at leats 10 million of times.*
+
+## Resampling a different variable
+
+    - Choose another variable of penguin data from dat_pen.
+
+    - Create a boxplot of the data from your chosen column in dat_pen, grouped by species.
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+dat_pen = droplevels(subset(penguins, species != "Gentoo"))
+
+par(mfrow = c(1, 2))
+  boxplot(
+    bill_length_mm ~ species, data = dat_pen,
+    ylab = "Bill length (mm)")
+
+```
+
+    - See the walkthrough for info.
+
+    - Use aggregate() to calculate the group means and the difference in means.
+
+    - Write the difference in means into a variable called diff_crit
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+agg_means_bill = aggregate(
+  bill_length_mm ~ species, 
+  data = dat_pen, 
+  FUN = "mean", 
+  na.rm = TRUE)
+
+diff_crit = diff(agg_means_bill[, 2])
+
+diff_crit
+```
+
+
+    - Conduct a t-test and observe the p-value.
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+t.test(dat_pen$bill_length_mm ~ dat_pen$species)
+
+```
+
+    - Conduct a resampling test with 1000 repetitions using your two_group_resample_diff() function.
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+dat_pen <- penguins
+
+n = 1000
+
+mean_differences = c()
+
+dat_pen <- droplevels(subset(dat_pen, species %in% c( "Adelie", "Chinstrap")))
+
+for (i in 1:n)
+{
+  mean_differences = c(
+    mean_differences,
+    two_group_resample_diff(dat_pen$bill_length_mm, 68, 152)
+  )
+}
+
+hist(mean_differences)
+
+```
+
+
+- **Q7 (1 pt.): Include a boxplot of your chosen variable in your report.**
+
+*Answer:*
+```{r, echo=FALSE, fig.align='center', fig.height=6, fig.width=6}
+
+  boxplot(
+    bill_length_mm ~ species, data = dat_pen,
+    ylab = "Bill length (mm)",
+    main= "Difference on bill length among species")
+```
+
+
+- **Q8 (3 pts.): Report the group means and difference between the means.**
+
+*Answer: 10.04243 *
+
+- **Q9 (4 pts.): Interpret the p-value from the t-test output in plain, non-technical English that a non-statistician would understand.**
+
+*Answer: The p values is 2.2e-16, in normal number is 0.00000000000000022, this value due of the t-test suggests that there is good evidence that the bill length is different between the two species. Our P value is so low that, if we redoing the analysis with different set of data we will need much more than 100 millions of intents to found a different between bill length of penguins.*
+
+*If we use the alpha value of 0.05 to interpret the p value, we could see that if we repeat the analysis with different set of data at least the 95% of the intent we will see a good evidence that the bill length is different between penguin species.*
+
+- **Q10 (2 pts.): How many differences in means were greater than diff_crit?**
+  - Remember to treat this as a 2-tailed test.
+
+*Answer: Our diff_crit is 10.04243, and there are 0 diffences in means that were greater that 10.04243*
+  
+```{r}
+sum(mean_differences > diff_crit)
+```
+
+
+- **Q11 (1 pt.): Include a histogram of your simulation results in your report. Make sure it has appropriate title and labels.**
+
+*Answer:*
+
+```{r, echo=FALSE, fig.align='center', fig.width=6, fig.height=4}
+hist(mean_differences, main= "Histogram of mean differences",
+     xlab= "Mean difference")
+```
+
+
+
+
+
