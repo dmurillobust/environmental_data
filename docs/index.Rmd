@@ -13,17 +13,48 @@ options(knitr.duplicate.label = "allow")
 source("links.R")
 ```
 
+```{r, include=FALSE}
+# Load packagues
+
+library(tidyverse)
+library(lubridate)
+library(sf)
+library(raster)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(ggspatial)
+library(rio)
+library(rgeos)
+library(here)
+```
+
+```{r, include=FALSE}
+# Load dataset
+
+momotus <- read_csv2(here("data", "HnMomots.csv"))
+```
+
 
 ## Welcome to David's Project Homepage
 
+We will see a Momotidae family distribution in Honduras. 
 
-- [Datacamp](`datacamp_url`)
-- [Github](`github_url`)
-- [rstudio](`rstudio_url`)
-- [rbase](`r_url`)
-  
-<a id="Labs"></a>
 
-- [Lab 8](Labs/Lab-08.htlm)
-- [Lab 9](Labs/Lab-09.htlm)
-- [Lab 10](Labs/Lab-10.htlm)
+The family Momotidae is endemic from the Neotropics region, and in Honduras there are 6 species of momoms. Momotus lessoni is the same that Momotus momota.
+
+We will load a layer from Honduras
+
+```{r}
+Honduras <- ne_countries("medium", returnclass = "sf", country = "Honduras")
+```
+
+```{r}
+ggplot(data= Honduras)+
+  geom_sf()+
+  geom_point(data = momotus, aes(decimalLongitude, decimalLatitude, color = species))+
+  theme_bw()
+```
+
+
+
+
