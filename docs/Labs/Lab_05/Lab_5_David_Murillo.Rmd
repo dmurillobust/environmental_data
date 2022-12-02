@@ -1,0 +1,677 @@
+---
+title: 'Lab 5'
+author: "David Murillo"
+date: "Octuber 12, 2022"
+output:
+  html_document:
+    theme: cosmo
+---
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+#Ricker function
+
+ricker_fun = function(x, a, b) 
+{
+  return(a * x * exp(-b * x))
+}
+```
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+#Here’s a plot of the shape using the simplest possible parameters: a = 1 and b = 1:
+
+curve(
+  ricker_fun(x, 1, 1), 
+  from = 0, to = 5, add = FALSE, 
+  main = "Ricker function: a = 1, b = 1",
+  ylab = "f(x)", xlab = "x")
+```
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# We can create an exponential function in R
+
+exp_fun = function(x,a,b){
+  return(a*exp(-b*x))
+}
+
+
+```
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+#Plot of the exponential function
+
+curve(
+  exp_fun(x, 1, 1), 
+  from = 0, to = 5, add = FALSE, 
+  main = "Exponential function: a = 1, b = 1",
+  ylab = "f(x)", xlab = "x")
+```
+
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# Using parameter values b = 1/15 and a = 0.3, your exponential function should like my plot:
+curve( exp_fun(x, a= 0.3, b= 1/15),
+       from = 0, to= 50, 
+       main = "Exponential function: a = 0.3, b= 1/15",
+       ylab= "f(x)",
+       xlab= "x")
+```
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+#Simulating data with different stochastic distributions
+
+#Simulated data on a line.
+#First, let’s choose 50 uniformly-distributed random x-values within the interval 2 to 10:
+
+# Seed the RNG so we can reproduce our results
+set.seed(1234567)
+
+# Specify the x-range and number of points:
+n_pts = 50
+x_min = 2
+x_max = 10
+
+# Generate the x-values
+x_sim = runif(n_pts, min = x_min, max = x_max)
+```
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+#Next, we can choose an intercept and slope for our deterministic model and generate the ‘predicted’ y values:
+  
+param_intercept = 2.3
+param_slope = 0.67
+y_pred = param_intercept + x_sim * param_slope
+plot(x_sim, y_pred, main = "Simulated Data\nNo Errors", xlab = "", ylab = "")
+```
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+#Normal errors 1
+#Now we can add some normally-distributed noise to generate our ‘observed’ y-values:
+
+error_mean = 0
+error_sd = 0.25
+
+y_observed = 
+  y_pred + 
+  rnorm(
+    n = n_pts, 
+    mean = error_mean, 
+    sd = error_sd)
+plot(x_sim, y_observed, main = "Normally Distributed Errors\n Constant Variance", xlab = "", ylab = "")
+```
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+#Normal errors 2
+#We could also use a more sophisticated stochastic model. For example, we could make the variability larger with increasing values of x:
+
+error_mean = 0
+error_sd = 0.1
+
+y_observed_2 = 
+  y_pred + 
+  rnorm(
+    n = n_pts, 
+    mean = error_mean, 
+    sd = error_sd * x_sim)
+
+par(mfrow = c(1, 2))
+plot(x_sim, y_observed, main = "Normally Distributed Errors\n Constant Variance", xlab = "", ylab = "")
+plot(x_sim, y_observed_2, main = "Normally Distributed Errors\n Increasing Variance", xlab = "", ylab = "")
+```
+
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+#Exponentially-distributed errors.
+
+#To produce this plot, I generated exponentially-distributed errors using rexp(). I used a rate parameter of 1.2. I’ll let you think about how you might create such a plot yourselves. To follow along, you can create a new vector called y_observed_3 containing your data with exponentially-distributed errors.
+
+set.seed(1234567)
+
+# Specify the x-range and number of points:
+n_pts = 50
+x_min = 2
+x_max = 10
+
+# Generate the x-values
+x_sim = runif(n_pts, min = x_min, max = x_max)
+
+param_intercept = 2.3
+param_slope = 0.67
+y_pred = param_intercept + x_sim * param_slope
+
+n_pts = 50
+rate = 1.2
+
+error_mean = 0
+error_sd = 0.25
+
+y_observed_3_1 = 
+  y_pred + 
+  rexp(
+    n = n_pts,
+    rate = 5)
+
+y_observed_3 = 
+  y_pred + 
+  rexp(
+    n = n_pts, 
+    rate= rate)
+
+par(mfrow = c(1, 2))
+
+plot(x_sim, y_observed_3_1, 
+     main = "Exponential Distributed Errors\n Constant Variance", 
+     xlab = "", 
+     ylab = "")
+
+plot(x_sim, y_observed_3, 
+     main = "Exponential Distributed Errors", 
+     xlab = "", 
+     ylab = "")
+
+
+```
+
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+
+#Fitted Linear Models
+#We haven’t covered how to build linear model objects yet, so for now don’t worry about understanding this code:
+
+fit_1 = lm(y_observed ~ x_sim)
+fit_2 = lm(y_observed_2 ~ x_sim)
+fit_3 = lm(y_observed_3 ~ x_sim)
+
+par(mfrow = c(1, 3))
+
+plot(y_observed ~ x_sim); abline(fit_1)
+plot(y_observed_2 ~ x_sim); abline(fit_2)
+plot(y_observed_3 ~ x_sim); abline(fit_3)
+```
+
+
+```{r, echo=FALSE, warning=FALSE, include=FALSE}
+# Model Residuals
+
+par(mfrow = c(1, 3))
+
+hist(resid(fit_1), main = "sim data 1", xlab= "Residuals")
+hist(resid(fit_2),  main = "sim data 2", xlab= "Residuals")
+hist(resid(fit_2),  main = "sim data 3", xlab= "Residuals")
+```
+
+## Marbled salamander dispersal data
+
+### Background
+
+The data for this exercise represent the dispersal of juvenile marbled salamanders from their natal ponds to neighboring ponds.
+
+The data were derived from a long-term study of marbled salamanders in western Massachusetts in which a cluster of 14 vernal pools were monitored continuously between 1999-2004. All juveniles were marked upon leaving their natal ponds. Subsequent recaptures at non-natal ponds were used to determine dispersal rates between ponds for first-time breeders (ftb).
+
+In the data set provided, the dispersal rates have been standardized to account for several factors, including the propensity for dispersal from each pond and the available distances between ponds owing to the unique configuration of ponds. The data set includes three variables:
+
+1. `dist.class` = distance class, based on 100 m intervals;
+
+2. `disp.rate.ftb` = standardized dispersal rate for first-time breeders, which can be interpreted as a relative dispersal probability.
+
+3. `disp.rate.eb` = standardized dispersal rate for experienced breeders, which can be interpreted as a relative dispersal probability
+
+
+# Question {.tabset .tabset-pills}
+
+## Exponential Function
+
+Instructions:
+
+Complete the template R code (from the walkthrough above) to build your exponential function. 
+Make sure you read the note about parameter `b` in the lab instructions.
+To gain visual intuition, try using `curve()` to plot your function.
+
+- Try out different values of the two parameters as well as plotting over different ranges of x-values.
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+
+exp_fun = function(x,a,b){
+  return(a*exp(-b*x))
+  }
+
+curve(exp_fun(x, a= 2, b= 3), 
+       from = 12, to= 32,
+       main = "Exponential Function: a: 2, b:3",
+       ylab = "f(x)",
+       xlab = "x")
+
+
+
+```
+
+
+- Try plotting two or more curves with slightly different parameter values on the same plot
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+curve( exp_fun(x, a= 2, b= 0.5), col = "red", 
+       from = 1, to= 100, 
+       main = "Exponential Function",
+       ylab = "f(x)",
+       xlab = "x")
+
+curve( exp_fun(x, a= 2, b= 0.8), col= "blue",
+       from = 1, to= 100, add = TRUE)
+
+curve( exp_fun(x, a= 2, b= 0.3), col= "green",
+       from = 1, to= 100, add = TRUE)
+
+
+```
+
+
+- You may need to try out different ranges of x-values in your plot windows to make sure you are focusing on the interesting parts of the curves.
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+curve( exp_fun(x, a= 2, b= 0.5), col = "red", 
+       from = 1, to= 100, 
+       main = "Exponential Function",
+       ylab = "f(x)",
+       xlab = "x")
+
+curve( exp_fun(x, a= 2, b= 0.5), col= "blue",
+       from = 1, to= 50, add = TRUE)
+
+curve( exp_fun(x, a= 2, b= 0.5), col= "green",
+       from = 1, to= 20, add = TRUE)
+```
+
+
+- Try different line colors, widths, and textures.
+
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+curve( exp_fun(x, a= 2, b= 0.5), col = "red", lty = 1, cex = 5,
+       from = 1, to= 100,
+       main = "Exponential Function",
+       ylab = "f(x)",
+       xlab = "x")
+
+curve( exp_fun(x, a= 2, b= 0.5), col= "blue", lty = 2, cex = 5,
+       from = 1, to= 50, add = TRUE)
+
+curve( exp_fun(x, a= 2, b= 0.5), col= "green", lty =3, cex = 5,
+       from = 1, to= 20, add = TRUE)
+```
+
+
+- **Q1 (2 pts.): Show the R code you used to create `exp_fun()`**
+
+**Answer:**
+
+```{r}
+exp_fun = function(x,a,b){
+  return(a*exp(-b*x))
+  }
+```
+
+- **Q2 (4 pts.): In your lab report, include a single figure containing __four__ negative exponential curves with the following parameter values and line colors/textures:**
+
+* curve 1: a = 1.9, b = 0.1, line color = black, line texture = solid
+* curve 2: a = 1.9, b = 0.3, line color = black, line texture = dotted
+* curve 3: a = 1.2, b = 0.2, line color = red, line texture = solid
+* curve 4: a = 1.2, b = 0.4, line color = red, line texture = dotted
+
+* Hint: check out the from, to, ylim, and add arguments for curve(). Setting appropriate x- and y-limits in your plot will help you see all four curves.
+
+**Answer:**
+
+```{r, echo=FALSE, warning=FALSE}
+curve(exp_fun(x, a= 1.9, b = 0.1), col = "black", lty = 1, cex= 3,
+      from = 0, to= 40, main = "Four Exponential curve",
+      ylab = "f(x)", xlab= "x")
+
+curve(exp_fun(x, a= 1.9, b = 0.3), col = "black", lty = 2, cex= 3,
+      from = 0, to= 40, add = TRUE)
+
+curve(exp_fun(x, a= 1.2, b = 0.2), col = "red", lty = 1, cex= 3,
+      from = 0, to= 40, add = TRUE)
+
+curve(exp_fun(x, a= 1.2, b = 0.4), col = "red", lty = 2, cex= 3,
+      from = 0, to= 40, add = TRUE)
+
+```
+
+- **Q3 (2 pts.): Observe how the curves vary as you change the two parameters’ values. Qualitatively describe what happens to the curve as you vary parameter `a`**
+
+**Answer: Because `a` is the y-intercept, when we change `a` the y-intercept will change  **
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+curve(exp_fun(x, a= 2.9, b = 0.1), col = "black", lty = 1, cex= 3,
+      from = 0, to= 40, main = "Four Exponential curve",
+      ylab = "f(x)", xlab= "x", ylim = c(0,50))
+
+curve(exp_fun(x, a= 5, b = 0.3), col = "black", lty = 2, cex= 3,
+      from = 0, to= 40, add = TRUE)
+
+curve(exp_fun(x, a= 10, b = 0.2), col = "red", lty = 1, cex= 3,
+      from = 0, to= 40, add = TRUE)
+
+curve(exp_fun(x, a= 20, b = 0.4), col = "red", lty = 2, cex= 3,
+      from = 0, to= 40, add = TRUE)
+```
+
+- **Q4 (2 pts.): Observe how the curves vary as you change the two parameters’ values. Qualitatively describe what happens to the curve as you vary parameter `b`**
+
+**Answer: Because `b` is the slope, when b is hihg the slope will be very steep, and when `b` is low the slope will be less steep, the negative `b` will produce negative relationship, and the positive, positive relationship**
+
+```{r, echo=FALSE, include= FALSE, warning=FALSE}
+curve(exp_fun(x, a= 1.9, b = 0.1), col = "black", lty = 1, cex= 3,
+      from = 0, to= 40, main = "Four Exponential curve",
+      ylab = "f(x)", xlab= "x")
+
+curve(exp_fun(x, a= 1.9, b = 1), col = "black", lty = 2, cex= 3,
+      from = 0, to= 40, add = TRUE)
+
+curve(exp_fun(x, a= 1.2, b = 5), col = "red", lty = 1, cex= 3,
+      from = 0, to= 40, add = TRUE)
+
+curve(exp_fun(x, a= 1.2, b = 10), col = "red", lty = 2, cex= 3,
+      from = 0, to= 40, add = TRUE)
+```
+
+
+## Ricker Functions
+
+Instructions:
+
+1. To gain visual intuition, try using `curve()` to plot the Ricker function.
+
+* Try out different values of the two parameters as well as plotting over different ranges of x-values.
+
+* Try plotting two or more curves with slightly different parameter values on the same plot
+
+* You may need to try out different ranges of x-values in your plot windows to make sure you are focusing on the interesting parts of the curves.
+
+* Try different line colors, widths, and textures.
+
+
+- **Q5 (6 pts.): In your lab report, include a single plot containing 6 Ricker curves with these parameter values:**
+
+*curve 1: a = 25, b = 0.2, line color = black, line texture = solid
+
+*curve 2: a = 20, b = 0.2, line color = black, line texture = dotted
+
+*curve 3: a = 10, b = 0.2, line color = black, line texture = dotted
+
+*curve 4: a = 75, b = 0.3, line color = red, line texture = solid
+
+*curve 5: a = 50, b = 0.3, line color = red, line texture = dotted
+
+*curve 6: a = 40, b = 0.3, line color = red, line texture = dotted
+
+**Answer**
+
+```{r, echo=FALSE, warning=FALSE}
+ricker_fun = function(x, a, b) 
+{
+  return(a * x * exp(-b * x))
+}
+
+curve(ricker_fun(x, a= 20, b= 0.2), col = "black", lty= 1,
+      from = 1, to = 50, main = "Six ricker relationship",
+      ylab = "f(x)", xlab = "x", ylim= c(0, 100))
+
+curve(ricker_fun(x, a= 20, b= 0.2), col = "black", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 10, b= 0.2), col = "black", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 75, b= 0.3), col = "red", lty= 1, add= TRUE)
+
+curve(ricker_fun(x, a= 50, b= 0.3), col = "red", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 40, b= 0.3), col = "red", lty= 2, add= TRUE)
+
+```
+
+
+- **Q6 (2 pts.): Observe how the curves vary as you change the two parameters’ values. Qualitatively describe what happens to the curve as you vary parameter `a`**
+
+**Answer:The y-intercep change when we cjange the `a` value, and when `a` is high the "bell" of the plot is "big or high", when `a` is low, the "bell" is "small or short"**
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+curve(ricker_fun(x, a= 1, b= 0.2), col = "black", lty= 1,
+      from = 1, to = 50, main = "Six ricker relationship",
+      ylab = "f(x)", xlab = "x", ylim= c(0, 120))
+
+curve(ricker_fun(x, a= 10, b= 0.2), col = "black", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 20, b= 0.2), col = "black", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 30, b= 0.2), col = "black", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 40, b= 0.2), col = "red", lty= 1, add= TRUE)
+
+curve(ricker_fun(x, a= 50, b= 0.2), col = "red", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 60, b= 0.2), col = "red", lty= 2, add= TRUE)
+```
+
+
+
+- **Q7 (2 pts.): Observe how the curves vary as you change the two parameters’ values. Qualitatively describe what happens to the curve as you vary parameter `b`**
+
+**Answer: When the values of `b` is small, the "bell" will be high, when `b` is higher the high of the "bell" will be small**
+
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+
+curve(ricker_fun(x, a= 50, b= 0.2), col = "black", lty= 1,
+      from = 1, to = 50, main = "Six ricker relationship",
+      ylab = "f(x)", xlab = "x", ylim= c(0, 120))
+
+curve(ricker_fun(x, a= 50, b= 0.3), col = "black", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 50, b= 0.4), col = "black", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 50, b= 0.5), col = "black", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 50, b= 0.6), col = "red", lty= 1, add= TRUE)
+
+curve(ricker_fun(x, a= 50, b= 0.7), col = "red", lty= 2, add= TRUE)
+
+curve(ricker_fun(x, a= 50, b= 0.8), col = "red", lty= 2, add= TRUE)
+```
+
+
+## Salamander Models
+
+Using the scatterplot of the salamander dispersal data for first time breeders, visually fit:
+
+- a linear model
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+
+line_point_slope = function(x, x1, y1, slope)
+  {
+    get_y_intercept = 
+      function(x1, y1, slope) 
+        return(-(x1 * slope) + y1)
+    
+    linear = 
+      function(x, yint, slope) 
+        return(yint + x * slope)
+    
+    return(linear(x, get_y_intercept(x1, y1, slope), slope))
+  }
+```
+
+
+- an exponential model
+
+- a Ricker model
+
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+library(here)
+
+dat_dispersal <- read.csv(here("data", "dispersal.csv"))
+
+plot(
+    dat_dispersal$dist.class,
+    dat_dispersal$disp.rate.ftb,
+    xlim = c(0, 1500),
+    ylim = c(0,1),
+    xlab = "distance class", 
+    ylab = "standardized dispersal rate", 
+    main = "Marbled Salamander - first time breeders\n(Bad) linear model")
+
+curve(exp_fun(x, a= 1, b = 0.009),
+      from = 0, to= 1500, add= TRUE, col= "darkblue", lty= 1, cex = 5)
+
+curve(ricker_fun(x, a= 0.019, b= 0.01),
+      from= 0, to= 1500, add = TRUE, col = "green", lty= 2, cex =5)
+
+curve(line_point_slope(x, x1= 500, y1= 0.4, slope= -0.0003), add = TRUE)
+
+#abline(lm(disp.rate.ftb ~ dist.class, data= dat_dispersal), add = TRUE,
+#       col= "black", lty= 5, cex= 5)
+
+```
+
+
+
+- **Q8 (2 pts.): Linear Model. Provide the values of the slope, x1, and y1 parameters you chose. Briefly describe how you chose the values.**
+
+**Answer: `x1= 500`, `y1= 0.4`, `slope = -0.0003`, I selected x1 and y1 using the plot, I look for one point and select the x and y values of that point, for the slope, the scatterplot look have negative relationship, and I try with diferent number to get the more adecuate for the model. **
+
+- **Q9 (2 pts.): In your lab report, include a scatterplot of the salamander data with your fitted linear model.**
+
+**Answer:**
+
+```{r, echo=FALSE, warning=FALSE}
+plot(
+    dat_dispersal$dist.class,
+    dat_dispersal$disp.rate.ftb,
+    xlim = c(0, 1500),
+    ylim = c(0,1),
+    xlab = "distance class", 
+    ylab = "standardized dispersal rate", 
+    main = "Marbled Salamander - first time breeders\n(Bad) linear model")
+
+curve(line_point_slope(x, x1= 500, y1= 0.4, slope= -0.0003), add = TRUE)
+
+```
+
+
+- **Q10 (2 pts.): Exponential Model. Provide the values of the a and b. Briefly describe how you chose the values.**
+
+**Answer: `a= 1`, and `b = 0.009`, I try many times with different values of `a` and `b` to get an "adecuate fix"**
+
+- **Q11 (2 pts.): In your lab report, include a scatterplot of the salamander data with your fitted exponential model.**
+
+**Answer:**
+
+```{r, echo=FALSE, warning=FALSE}
+
+plot(
+    dat_dispersal$dist.class,
+    dat_dispersal$disp.rate.ftb,
+    xlim = c(0, 1500),
+    ylim = c(0,1),
+    xlab = "distance class", 
+    ylab = "standardized dispersal rate", 
+    main = "Marbled Salamander - first time breeders\n(Bad) exponential model")
+
+curve(exp_fun(x, a= 1, b = 0.009),
+      from = 0, to= 1500, add= TRUE, col= "darkblue", lty= 1, cex = 5)
+```
+
+
+- **Q12 (2 pts.): Ricker Model Provide the values of the a and b. Briefly describe how you chose the values.**
+
+**Answer: `a= 0.019`, and `b= 0.01`, these was the most difficult to found, I try a lot times with diffent values of `a` and `b` to get a lineal with "good fix"**
+
+
+- **Q13 (2 pts.): In your lab report, include a scatterplot of the salamander data with your fitted ricker model.**
+
+**Answer:**
+
+```{r, echo=FALSE, warning=FALSE}
+plot(
+    dat_dispersal$dist.class,
+    dat_dispersal$disp.rate.ftb,
+    xlim = c(0, 1500),
+    ylim = c(0,1),
+    xlab = "distance class", 
+    ylab = "standardized dispersal rate", 
+    main = "Marbled Salamander - first time breeders\n(Bad) Ricker model")
+
+curve(ricker_fun(x, a= 0.019, b= 0.01),
+      from= 0, to= 1500, add = TRUE, col = "green", lty= 2, cex =5)
+
+```
+
+
+## Salamander Model Residuals
+
+Calculate the residuals for your three fitted models and store them in a data.frame
+
+- The columns containing the residuals should have the following names:
+
+- “resids_linear”
+
+- “resids_exp”
+
+- “resids_ricker”
+
+```{r, echo=FALSE, include=FALSE, warning=FALSE}
+Exp = dat_dispersal$disp.rate.ftb - exp_fun(dat_dispersal$dist.class, a= 1, b = 0.009)
+
+Linear = dat_dispersal$disp.rate.ftb - line_point_slope(dat_dispersal$dist.class, x1= 500, y1= 0.4, slope= -0.0003)
+
+Ricker = dat_dispersal$disp.rate.ftb - ricker_fun(dat_dispersal$dist.class, a= 0.019, b= 0.01)
+
+Residuals <- data.frame(Exp, Linear, Ricker)
+
+head(Residuals)
+
+
+```
+
+
+- **Q14 (4 pts.): Show the R code you used to create your data frame of model residuals.**
+
+```{r}
+Exp = dat_dispersal$disp.rate.ftb - exp_fun(dat_dispersal$dist.class, a= 1, b = 0.009)
+
+Linear = dat_dispersal$disp.rate.ftb - line_point_slope(dat_dispersal$dist.class, x1= 500, y1= 0.4, slope= -0.0003)
+
+Ricker = dat_dispersal$disp.rate.ftb - ricker_fun(dat_dispersal$dist.class, a= 0.019, b= 0.01)
+
+Residuals <- data.frame(Exp, Linear, Ricker)
+
+head(Residuals)
+```
+
+
+- **Q15 (3 pts.): In your lab report, include histograms of the residuals for each of your three models. You may create a single figure with three panels, or include three separate figures.**
+
+```{r, fig.align='center', fig.width= 9, fig.height=3, echo=FALSE, include=TRUE, warning=FALSE}
+par(mfrow = c(1, 3))
+
+hist(Exp, main = "Exponential Residuals", xlab= "Residuals")
+hist(Linear,  main = "Linear Residuals", xlab= "Residuals")
+hist(Ricker,  main = "Ricker Residuals", xlab= "Residuals")
+```
+
+
+
+
+
+
