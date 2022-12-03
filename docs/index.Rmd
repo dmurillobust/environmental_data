@@ -37,6 +37,12 @@ momotus <- read_csv2(here("data", "HnMomots.csv"))
 
 ## Welcome to David's Project Homepage
 
+In this website we will see some birds distribution in Honduras.
+
+# Honduras birds distribution {.tabset .tabset-pills}
+
+## Momotidae
+
 We will see a Momotidae family distribution in Honduras. 
 
 
@@ -56,5 +62,37 @@ ggplot(data= Honduras)+
 ```
 
 
+## Golden Wing Warble (*Vermivora chrysoptera*)
+
+```{r, echo= FALSE, warning=FALSE}
+
+VERCHR <- read_csv(here("data", "VERCHR.csv"))
+HN_VER <- filter(VERCHR, countryCode =="HN")
+
+
+
+North_America <- ne_countries("small", returnclass = "sf", continent = "North America")
+
+Honduras <- getData("GADM", country = "Honduras", level = 1) %>%
+  st_as_sf()
+
+
+Central_America <- ne_countries("medium", returnclass = "sf", 
+                                country  = c("Honduras", "Nicaragua"))
+
+ggplot()+
+  geom_sf(data = Honduras) +
+  geom_point(data = HN_VER, aes(Longitude, Latitude, color = individualCount)) +
+  annotation_north_arrow(location = "tr", width = unit(1,"cm" ), 
+                                          height = unit(1, "cm")) +
+  annotation_scale(location= "br")+
+  labs(title = "Distribution",
+       subtitle = "Vermivora chrysopter",
+       color= "Abundance")+
+  theme(plot.title = element_text(face= "italic"))
+
+
+
+```
 
 
